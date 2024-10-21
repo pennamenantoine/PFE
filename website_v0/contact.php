@@ -1,13 +1,14 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nom = $_POST['nom'];  // Pas de filtrage ou de validation
-    $email = $_POST['email'];  // Pas de filtrage ou de validation
-    $message = $_POST['message'];  // Pas de filtrage ou de validation
+    // Récupération et échappement des données utilisateur
+    $nom = htmlspecialchars(trim($_POST['nom']));
+    $email = htmlspecialchars(trim($_POST['email']));
+    $message = htmlspecialchars(trim($_POST['message']));
 
-    // Affichage direct des entrées utilisateur sans protection
-    echo "<h2>Merci pour votre message, $nom</h2>";
-    echo "<p>Email : $email</p>";
-    echo "<p>Message : $message</p>";
+    // Affichage sécurisé des entrées utilisateur
+    echo "<h2>Merci pour votre message, " . $nom . "</h2>";
+    echo "<p>Email : " . $email . "</p>";
+    echo "<p>Message : " . nl2br($message) . "</p>"; // nl2br pour afficher les nouvelles lignes
 }
 ?>
 
