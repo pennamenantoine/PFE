@@ -1,9 +1,7 @@
 <?php
-session_start();
-if (!isset($_SESSION['username'])) {
-    header("Location: login.html"); // Redirige vers la page de login si non connecté
-    exit();
-}
+$result = include 'is_admin.php'; // Inclut le fichier de vérification admin
+
+// À ce stade, l'utilisateur est connecté et est soit un admin soit un utilisateur régulier
 ?>
 
 <!DOCTYPE html>
@@ -14,8 +12,30 @@ if (!isset($_SESSION['username'])) {
     <title>Dashboard</title>
 </head>
 <body>
-    <h1>Welcome, <?php echo $_SESSION['username']; ?>!</h1>
-    <p><a href="logout.php">Logout</a></p>
+    <header>
+        <h1>Tableau de Bord</h1>
+        <nav>
+            <ul>
+                <li><a href="logout.php">Déconnexion</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Bienvenue, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h2>
+
+        <?php if ($result === true): ?>
+            <h2>Panneau Administrateur</h2>
+            <p>En tant qu'administrateur, vous avez accès aux fonctionnalités suivantes :</p>
+            <ul>
+                <li><a href="user_management.php">Gestion des Utilisateurs</a></li>
+                <li><a href="some_other_admin_functionality.php">Autre Fonctionnalité Administrateur</a></li>
+            </ul>
+        <?php else: ?>
+            <h2>Panneau Utilisateur</h2>
+            <p>En tant qu'utilisateur régulier, vous avez accès aux fonctionnalités utilisateur.</p>
+        <?php endif; ?>
+    </main>
 </body>
 </html>
 
