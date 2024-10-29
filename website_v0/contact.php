@@ -8,7 +8,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Affichage sécurisé des entrées utilisateur
     echo "<h2>Merci pour votre message, " . $nom . "</h2>";
     echo "<p>Email : " . $email . "</p>";
-    echo "<p>Message : " . nl2br($message) . "</p>"; // nl2br pour afficher les nouvelles lignes
+    echo "<p>Message : " . htmlspecialchars($message) . "</p>"; // nl2br pour afficher les nouvelles lignes
+//    echo "<p>Message : " . nl2br($message) . "</p>"; // nl2br pour afficher les nouvelles lignes
 }
 ?>
 

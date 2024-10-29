@@ -23,6 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Requête vulnérable
 	$sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
+	echo $sql;
         $result = $conn->query($sql);
 
         // Vérifier si l'utilisateur existe
