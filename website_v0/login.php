@@ -31,8 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Vérifier si l'utilisateur existe
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
-            
-            // Vérifier le mot de passe (assurez-vous d'utiliser password_verify si vous avez haché le mot de passe)
+
+            // Vérifier le mot de passe
 	if ($password === $user['password']) {                // Authentification réussie
                 $_SESSION['username'] = $user['username'];
                 header("Location: dashboard.php"); // Rediriger vers la page d'accueil ou un tableau de bord
