@@ -1,6 +1,5 @@
 <?php
-
-// Inclure le fichier pour vérifier si l'utilisateur est admin
+include 'db.php';
 $result = include 'is_admin.php';
 
 // Vérifiez si l'utilisateur a un rôle d'administrateur
@@ -9,7 +8,7 @@ if ($result === false) {
     exit();
 } else {
     // Récupérer tous les utilisateurs
-    $stmt = $pdo->query("SELECT * FROM users");
+    $stmt = $conn->query("SELECT * FROM users");
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
@@ -50,9 +49,9 @@ if ($result === false) {
         </tr>
         <?php foreach ($users as $user): ?>
         <tr>
-            <td><?php echo htmlspecialchars($user['id']); ?></td>
-            <td><?php echo htmlspecialchars($user['username']); ?></td>
-            <td><?php echo htmlspecialchars($user['email']); ?></td>
+            <td><?php echo $user['id']; ?></td>
+            <td><?php echo $user['username']; ?></td>
+            <td><?php echo $user['email']; ?></td>
             <td>
                 <form action="update_user_role.php" method="POST" style="display: inline;">
                     <select name="role">

@@ -1,19 +1,14 @@
 <?php
-include 'auth_check.php';
+session_start();
 
-// Récupérer le nom d'utilisateur de la session
-$username = $_SESSION['username'];
-
-// Préparer et exécuter la requête pour récupérer le rôle de l'utilisateur
-$stmt = $pdo->prepare("SELECT role FROM users WHERE username = :username");
-$stmt->execute(['username' => $username]);
-$currentUser = $stmt->fetch(PDO::FETCH_ASSOC);
+// Récupérer le role de l'utilisateur pour la session en cours
+$role = $_SESSION['role'];
 
 // Vérifier si l'utilisateur a un rôle d'administrateur
-if ($currentUser && $currentUser['role'] === 'admin') {
-    return true; // Utilisateur est admin
+if ($role === 'admin') {
+    return true;
 } else {
-    return false; // Utilisateur n'est pas admin
+    return false;
 }
 ?>
 

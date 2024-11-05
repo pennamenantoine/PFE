@@ -1,11 +1,5 @@
 <?php
-include 'auth_check.php';
-
-// Vérifiez si l'utilisateur a un rôle d'administrateur
-if ($currentUser['role'] !== 'admin') {
-    header("Location: dashboard.php"); // Redirige vers le tableau de bord si ce n'est pas un admin
-    exit();
-}
+include "db.php";
 
 // Vérifier si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id']) && isset($_POST['role'])) {
@@ -18,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id']) && isset($_
     }
 
     // Préparer la mise à jour du rôle
-    $stmt = $pdo->prepare("UPDATE users SET role = :role WHERE id = :user_id");
+    $stmt = $conn->prepare("UPDATE users SET role = :role WHERE id = :user_id");
     $stmt->bindParam(':role', $newRole);
     $stmt->bindParam(':user_id', $userId);
 
