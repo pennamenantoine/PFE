@@ -1,4 +1,4 @@
-`<?php
+<?php
 
 // Connexion à la base de données
 //$pdo = new PDO('mysql:host=localhost;dbname=user_auth', 'root', 'toor');

@@ -73,7 +73,7 @@ if ($result === false) {
     </table>
 
     <h2>Add New User</h2>
-    <form action="add_user.php" method="POST">
+    <form action="signup.php" method="POST">
         <input type="text" name="username" placeholder="Username" required>
         <input type="email" name="email" placeholder="Email" required>
         <select name="role">

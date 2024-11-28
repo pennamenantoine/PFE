@@ -10,22 +10,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Requête vulnérable
 	$sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
-$result = $conn->query($sql);
-
+	$result = $conn->query($sql);
 
 	$user = $result->fetch(PDO::FETCH_ASSOC);
 
-            // Authentification réussie
-            $_SESSION['username'] = $user['username'];
-	    $_SESSION['role'] = $user['role'];
-            header("Location: dashboard.php"); // Rediriger vers la page d'accueil ou un tableau de bord
-            exit();
-
-    } else {
-        echo "Please fill in both fields.";
-    }
- }else {
-    echo "Form was not submitted correctly.";
+	if ($user){
+        	// Authentification réussie
+	        $_SESSION['username'] = $user['username'];
+		$_SESSION['role'] = $user['role'];
+      	        header("Location: dashboard.php"); // Rediriger vers la page d'accueil ou un tableau de bord
+                exit();
+    	}
+	else {
+        	echo "Invalid Username or Password";
+	}
 }
-
+	else {
+    		echo "Form was not submitted correctly.";
+	}
+}
 ?>
