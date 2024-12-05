@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 include "db.php";
@@ -6,7 +7,7 @@ include "db.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['username']) && isset($_POST['password'])) {
         $username = $_POST['username'];
-        $password = $_POST['password'];
+        $password = hash('md5', $_POST['password']);
 
         // Requête vulnérable
 	$sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
