@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 include "db.php";
@@ -19,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         	// Authentification réussie
 	        $_SESSION['username'] = $user['username'];
 		$_SESSION['role'] = $user['role'];
+		$_SESSION['email'] = $user['email'];
       	        header("Location: dashboard.php"); // Rediriger vers la page d'accueil ou un tableau de bord
                 exit();
     	}
