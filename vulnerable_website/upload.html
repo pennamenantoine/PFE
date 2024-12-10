@@ -1,33 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blueimp File Upload</title>
-</head>
+<html>
 <body>
-<h1>File Upload</h1>
-<form id="fileupload" action="upload.php" method="POST" enctype="multipart/form-data">
-<input type="file" name="files[]" multiple>
-<button type="submit">Upload</button>
+
+<form action="upload.php" method="post" enctype="multipart/form-data">
+  Select image to upload:
+  <input type="file" name="fileToUpload" id="fileToUpload">
+  <input type="submit" value="Upload Image" name="submit">
 </form>
-<script src="../dependencies/jquery-3.7.1.js"></script>
-<script src="../dependencies/jQuery-File-Upload-9.21.0/js/jquery.fileupload.js"></script>
-<script>
-$(function () {
-            $('#fileupload').fileupload({
-                url: 'upload.php', // Server-side upload handler
-                dataType: 'json',
-                done: function (e, data) {
-                    $.each(data.result.files, function (index, file) {
-                        $('<p/>').text(file.name).appendTo(document.body);
-                    });
-                },
-                fail: function (e, data) {
-                    alert('File upload failed!');
-                }
-            });
-        });
-</script>
+
 </body>
 </html>

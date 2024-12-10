@@ -1,36 +1,13 @@
-<?php
-$uploadDir = 'uploads/';
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
+`<?php
+$target_dir = "uploads/";
+if (!is_dir($target_dir)) {
+    mkdir($target_dir, 0777, true);
 }
 
-if ($_FILES['files']) {
-    $uploadedFiles = [];
-    foreach ($_FILES['files']['name'] as $key => $name) {
-        $tempName = $_FILES['files']['tmp_name'][$key];
-        $uploadFile = $uploadDir . basename($name);
-
-        // Simple validation (improve this for security!)
-        $allowedExtensions = ['jpg', 'png', 'gif'];
-        $fileExtension = pathinfo($name, PATHINFO_EXTENSION);
-
-        if (!in_array($fileExtension, $allowedExtensions)) {
-            echo json_encode(['error' => 'Invalid file type.']);
-            exit();
-        }
-
-        if (move_uploaded_file($tempName, $uploadFile)) {
-            $uploadedFiles[] = [
-                'name' => $name,
-                'size' => $_FILES['files']['size'][$key],
-                'url' => $uploadDir . $name,
-            ];
-        }
-    }
-
-    // Return JSON response
-    echo json_encode(['files' => $uploadedFiles]);
-} else {
-    echo json_encode(['error' => 'No files uploaded.']);
+$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+  if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+    echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
+  } else {
+    echo "Sorry, there was an error uploading your file.";
 }
 ?>
