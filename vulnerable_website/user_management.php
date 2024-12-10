@@ -32,6 +32,10 @@ if ($result === false) {
         th {
             background-color: #f2f2f2;
         }
+	.scrollable-table {
+		max-height: calc(12 * 1.5em);
+		overflow-y: auto;
+	}
     </style>
 </head>
 <body>
@@ -39,6 +43,7 @@ if ($result === false) {
     <p><a href="logout.php">Logout</a></p>
 
     <h2>Manage Users</h2>
+    <div class="scrollable-table">
     <table>
         <tr>
             <th>ID</th>
@@ -71,7 +76,7 @@ if ($result === false) {
         </tr>
         <?php endforeach; ?>
     </table>
-
+    </div>
     <h2>Add New User</h2>
     <form action="signup.php" method="POST">
         <input type="text" name="username" placeholder="Username" required>

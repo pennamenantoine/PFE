@@ -19,6 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	        $_SESSION['username'] = $user['username'];
 		$_SESSION['role'] = $user['role'];
 		$_SESSION['email'] = $user['email'];
+		$_SESSION['id'] = intval($user['id']);;
       	        header("Location: dashboard.php"); // Rediriger vers la page d'accueil ou un tableau de bord
                 exit();
     	}
