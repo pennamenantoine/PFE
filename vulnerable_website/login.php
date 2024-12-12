@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	if ($user){
         	// Authentification réussie
-	        $_SESSION['username'] = $user['username'];
+	    $_SESSION['username'] = $user['username'];
 		$_SESSION['role'] = $user['role'];
 		$_SESSION['email'] = $user['email'];
 		$_SESSION['id'] = intval($user['id']);;

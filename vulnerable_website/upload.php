@@ -1,13 +1,24 @@
-`<?php
-$target_dir = "uploads/";
-if (!is_dir($target_dir)) {
-    mkdir($target_dir, 0777, true);
-}
-
-$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-  if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-    echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
-  } else {
-    echo "Sorry, there was an error uploading your file.";
-}
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+include 'navbar.php';
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+</head>
+<body>
+
+<!-- Image upload form -->
+<form action="upload_image.php" method="post" enctype="multipart/form-data">
+    <label for="fileToUpload">Select image to upload:</label>
+    <input type="file" name="fileToUpload" id="fileToUpload">
+    <input type="submit" value="Upload Image" name="submit">
+</form>
+
+</body>
+</html>

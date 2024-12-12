@@ -1,7 +1,5 @@
 <?php
-$result = include 'is_admin.php'; // Inclut le fichier de vérification admin
-
-// À ce stade, l'utilisateur est connecté et est soit un admin soit un utilisateur régulier
+include 'navbar.php'; // user can be admin or standard user
 ?>
 
 <!DOCTYPE html>
@@ -12,22 +10,7 @@ $result = include 'is_admin.php'; // Inclut le fichier de vérification admin
     <title>Dashboard</title>
 </head>
 <body>
-    <header><link rel="stylesheet" href="dashboard.css">
-        <h1>Dashboard</h1>
-        <nav>
-            <ul>
-                <li><a href="logout.php">Logout</a></li>
-		<li><a href="profile.php">Profile</a></li>
-		<?php if ($result === true): ?>
-                <li><a href="user_management.php">User Management</a></li>
-	        <?php endif; ?>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
         <h2>Bienvenue, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h2>
-    </main>
 </body>
 </html>
 

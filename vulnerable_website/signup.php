@@ -20,16 +20,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = $conn->query($sql);
 
 	if ($result) {
-	    	if (empty($_POST['role'])) {
+	    if (empty($_POST['role'])) {
         	echo "User created successfully <a href='login.html'>Connectez-vous ici</a>";
-    		}
-	else {
+    	}
+		else {
 	        header("Location: user_management.php?success=User created successfully");
-}
+		}
 	}
 	else {
         	echo "Error";
-    	}
+    }
+
+	$id = $conn->lastInsertId();
+
+	$uploadDir = "uploads/";
+	$picture = $uploadDir . "blank-profile-picture.png";
+	
+	$sqlPicture = "INSERT INTO images (user_id, file_path) VALUES ('$id', '$picture')";
+    $result = $conn->query($sqlPicture);
+
+	if (!$result) {
+        echo "Picture Error";
+    }
 
 	}
 }

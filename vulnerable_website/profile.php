@@ -1,11 +1,36 @@
 <?php
-session_start();
+//session_start();
 include "db.php";
 
+include 'navbar.php';
+
 $id = $_SESSION['id'];
+$uploadDir = "uploads/";
+
 $sql = "SELECT email from users where id= '$id'";
 $result = $conn->query($sql);
 $email = $result->fetchColumn();
+
+
+if (isset($_GET['param_img'])) {
+    $picture = $_GET['param_img'];
+} else {
+    $sql = "SELECT file_path FROM images WHERE user_id = '$id'";
+    $result = $conn->query($sql);
+
+    if ($result) {
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            $picture = $row['file_path'];
+        } else {
+            $picture = $uploadDir . "blank-profile-picture.png";
+        }
+    } else {
+        echo "Query Error: " . $conn->errorInfo()[2];
+    }
+}
+
+   
 ?>
 
 <!DOCTYPE html>
@@ -22,8 +47,9 @@ $email = $result->fetchColumn();
         <h2><?php echo htmlspecialchars($_SESSION['username']); ?> Profile</h2>
     	</main>
        <form action="update_profile.php" method="POST">
-	    <a href="upload.html">update photo</a>
-	    <img src="blank-profile-picture-973460_1280.png" style="width:100%">
+	    <a href="upload.php">update photo</a>
+        <img src="<?php echo $picture; ?>" style="width:100%">
+        <input type="text" name="picture" value="<?php echo $picture; ?>" hidden>
 	    <label id="enable_email_field" style="color: blue; cursor: pointer; text-decoration: underline;">update email</label>
             <input type="email" id="email" name="email" value=<?php echo htmlspecialchars("$email");?> readonly>
 	    <script>
@@ -45,9 +71,11 @@ $email = $result->fetchColumn();
             <button type="submit">Modify</button>
         </form>
 	<?php
-	if (isset ($_GET['param']))
-		if ($_GET['param'] == 1)
-			echo "Profile updated successfully";
+	if (isset ($_GET['param'])){
+        //echo $_GET['param'];
+		echo "Profile updated successfully";
+        
+    }
 	?>
     </div>
 </body>

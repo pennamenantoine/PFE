@@ -1,6 +1,7 @@
 <?php
 include 'db.php';
-$result = include 'is_admin.php';
+include 'navbar.php';
+//$result = include 'is_admin.php';
 
 // Vérifiez si l'utilisateur a un rôle d'administrateur
 if ($result === false) { 
@@ -40,7 +41,6 @@ if ($result === false) {
 </head>
 <body>
     <h1>User Management</h1>
-    <p><a href="logout.php">Logout</a></p>
 
     <h2>Manage Users</h2>
     <div class="scrollable-table">
