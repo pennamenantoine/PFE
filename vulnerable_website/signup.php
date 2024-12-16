@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         	echo "Error";
     }
 
-	$id = $conn->lastInsertId();
+/*	$id = $conn->lastInsertId();
 
 	$uploadDir = "uploads/";
 	$picture = $uploadDir . "blank-profile-picture.png";
@@ -41,8 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 	if (!$result) {
         echo "Picture Error";
-    }
-
+    } */
 	}
 }
 
