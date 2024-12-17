@@ -48,7 +48,7 @@ if (isset($_GET['param_img'])) {
     	</main>
        <form action="update_profile.php" method="POST">
 	    <a href="upload.php">update photo</a>
-        <img src="<?php echo $picture; ?>" style="width:100%">
+        <img src="<?php echo $picture; ?>" style="width:100%; max-width: 300px; max-height: 300px; object-fit: cover;">
         <input type="text" name="picture" value="<?php echo $picture; ?>" hidden>
 	    <label id="enable_email_field" style="color: blue; cursor: pointer; text-decoration: underline;">update email</label>
             <input type="email" id="email" name="email" value=<?php echo htmlspecialchars("$email");?> readonly>
