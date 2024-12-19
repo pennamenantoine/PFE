@@ -68,7 +68,7 @@ if (isset($_GET['param_img'])) {
             <input id="old_password" type="password" placeholder="Old password" name="old_password" hidden>
             <input id="new_password" type="password" placeholder="New password" name="new_password" hidden>
             <input id="confirm_new_password" type="password" placeholder="Confirm Password" name="confirm_new_password" hidden>
-            <button type="submit">Modify</button>
+            <button type="submit">Save</button>
         </form>
 	<?php
 	if (isset ($_GET['param'])){
