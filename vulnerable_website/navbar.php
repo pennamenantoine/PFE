@@ -13,6 +13,7 @@ $result = include 'is_admin.php'; // Ensure is_admin.php returns a boolean
                 <li><a href="user_management.php">User Management</a></li>
             <?php endif; ?>
             <li><a href="profile.php">Profile</a></li>
+            <li><a href="reviews.php">Reviews</a></li>
             <li><a href="logout.php">Logout</a></li>
         </ul>
     </nav>

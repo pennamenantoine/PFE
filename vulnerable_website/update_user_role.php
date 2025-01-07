@@ -1,5 +1,17 @@
 <?php
 include "db.php";
+include "navbar.php";
+
+// Vérifiez si l'utilisateur a un rôle d'administrateur
+if ($result === false) { 
+    header("Location: dashboard.php"); // Redirige vers le tableau de bord utilisateur si ce n'est pas un admin
+    exit();
+} else {
+    // Récupérer tous les utilisateurs
+    $stmt = $conn->query("SELECT * FROM users");
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
 // Vérifier si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id']) && isset($_POST['role'])) {
