@@ -13,7 +13,7 @@ $mime_type = $_FILES["fileToUpload"]["type"];
 
 // Blacklist
 $excluded_extensions = ['php', 'phtml', 'js', 'sh', 'bash', 'zsh', 'exe', 'bin', 'app', 'msi', 'dll', 'so', 'pdb', 'asp', 'aspx', 'pl', 'cgi', 'py', 'swf', 'flv', 'docm', 'xlsm', 'pptm'];
-$excluded_mime_types = ['application/x-php', 'text/html', 'application/javascript', 'application/x-sh'];
+$excluded_mime_types = ['text/php', 'application/x-php', 'text/html', 'application/javascript', 'application/x-sh'];
 
 //Check if the file extension is in the excluded list
 if (in_array($file_extension, $excluded_extensions) || in_array($mime_type, $excluded_mime_types)) {
