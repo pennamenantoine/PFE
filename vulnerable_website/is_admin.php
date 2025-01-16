@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+//check if user is authentified
+if (!isset($_SESSION['id'])) {
+    header("Location: login.html");
+    exit();
+}
+
 // Récupérer le role de l'utilisateur pour la session en cours
 $role = $_SESSION['role'];
 

@@ -20,15 +20,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$_SESSION['role'] = $user['role'];
 		$_SESSION['email'] = $user['email'];
 		$_SESSION['id'] = intval($user['id']);;
-      	        header("Location: dashboard.php"); // Rediriger vers la page d'accueil ou un tableau de bord
-                exit();
+		$connection = 1;
     	}
 	else {
+		$connection = 0;
         	echo "Invalid Username or Password";
 	}
 }
 	else {
+		$connection = 0;
     		echo "Form was not submitted correctly.";
+	}
+	if ($connection == 1) {
+		header("Location: dashboard.php");
+        	exit();
 	}
 }
 ?>
