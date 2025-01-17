@@ -1,21 +1,33 @@
 <?php
+//check if user is authentified
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($_SESSION['id'])) 
+    $connection = 0;
+else
+    $connection = 1;
+
 include "db.php"; 
-include 'navbar.php';
 
-$user_id = $_SESSION['id'];
+if ($connection) {    
+    include 'navbar.php';
 
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $rating = intval($_POST['rating']);
-    $comment = $_POST['comment'];
+    $user_id = $_SESSION['id'];
 
-    // Use prepared statement to avoid SQL syntax errors
-    $stmt = $conn->prepare("INSERT INTO reviews (user_id, rating, comment) VALUES (?, ?, ?)");
-    $stmt->execute([$user_id, $rating, $comment]);
+    // Handle form submission
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $rating = intval($_POST['rating']);
+        $comment = $_POST['comment'];
 
-    // Refresh page to show the updated feedback table
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit;
+        // Use prepared statement to avoid SQL syntax errors
+        $stmt = $conn->prepare("INSERT INTO reviews (user_id, rating, comment) VALUES (?, ?, ?)");
+        $stmt->execute([$user_id, $rating, $comment]);
+
+        // Refresh page to show the updated feedback table
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    }
 }
 
 // Fetch all feedbacks, sorted by date (newest first)
@@ -103,31 +115,34 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php endforeach; ?>
             </tbody>
         </table>
+   
+            <hr>
+        <?php if ($connection): ?>
+            <!-- Add New Review Form -->
+            <form action="" method="POST">
+                <h3>Add Your Review</h3>
+                <label for="rating">Rating (1-5):</label>
+                <select name="rating" id="rating" required>
+                    <option value="1">1 ⭐</option>
+                    <option value="2">2 ⭐⭐</option>
+                    <option value="3">3 ⭐⭐⭐</option>
+                    <option value="4">4 ⭐⭐⭐⭐</option>
+                    <option value="5">5 ⭐⭐⭐⭐⭐</option>
+                </select>
 
-        <hr>
+                <br><br>
 
-        <!-- Add New Review Form -->
-        <form action="" method="POST">
-            <h3>Add Your Review</h3>
-            <label for="rating">Rating (1-5):</label>
-            <select name="rating" id="rating" required>
-                <option value="1">1 ⭐</option>
-                <option value="2">2 ⭐⭐</option>
-                <option value="3">3 ⭐⭐⭐</option>
-                <option value="4">4 ⭐⭐⭐⭐</option>
-                <option value="5">5 ⭐⭐⭐⭐⭐</option>
-            </select>
-
-            <br><br>
-
-            <label for="comment">Review:</label><br>
-            <textarea name="comment" id="comment" rows="4" placeholder="Write your review here..."></textarea>
+                <label for="comment">Review:</label><br>
+                <textarea name="comment" id="comment" rows="4" placeholder="Write your review here..."></textarea>
 
 
-            <br><br>
+                <br><br>
 
-            <button type="submit">Submit Review</button>
-        </form>
-    </div>
-</body>
-</html>
+                <button type="submit">Submit Review</button>
+            </form>
+            <?php else: ?>
+                <p>You must be logged in to add a new post.</p>
+            <?php endif; ?>    
+        </div>
+    </body>
+    </html>
