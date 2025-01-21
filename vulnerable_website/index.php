@@ -42,7 +42,20 @@ body {
   <a href="reviews.php">Reviews</a>
   <a href="about.html">About us</a>
   <a href="contact.html">Contact</a>
-  <a href="login.html" class="right">Login</a>
+
+
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+//check if user is authentified
+if (isset($_SESSION['username']))
+      echo '<a href="dashboard.php" class="right">' . htmlspecialchars($_SESSION['username']) . '</a>';
+
+else
+      echo '<a href="login.html" class="right">Login</a>';
+?>
 </div>
 
 <div class="main">

@@ -11,6 +11,7 @@ $result = include 'is_admin.php'; // Ensure is_admin.php returns a boolean
         <ul class="right-menu">
             <?php if ($result === true): ?>
                 <li><a href="user_management.php">User Management</a></li>
+                <li><a href="product_management.php">Product Management</a></li>
             <?php endif; ?>
             <li><a href="profile.php">Profile</a></li>
             <li><a href="reviews.php">Reviews</a></li>

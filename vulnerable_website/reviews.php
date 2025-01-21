@@ -92,7 +92,7 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
     <div class="container">
-        <h2>Review Management</h2>
+        <h2>Reviews</h2>
 
         <!-- Display Reviews in a Table -->
         <table>

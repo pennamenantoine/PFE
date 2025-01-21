@@ -1,7 +1,6 @@
 <?php
 include 'db.php';
 include 'navbar.php';
-//$result = include 'is_admin.php';
 
 // Vérifiez si l'utilisateur a un rôle d'administrateur
 if ($result === false) { 
