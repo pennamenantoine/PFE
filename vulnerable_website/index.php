@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Homepage</title>
+<title>GreenWash Homepage</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="main.css">
@@ -13,6 +13,11 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
+}
+
+p {
+  padding: 10px 20px; /* Add padding to individual paragraphs */
+  line-height: 1.6; /* Improve readability */
 }
 
 /* Responsive layout - when the screen is less than 700px wide, make the two columns stack on top of each other instead of next to each other */
@@ -32,8 +37,7 @@ body {
 </style>
 </head>
 <body>
-
-  <div class="header" style="background-image: url('green-forest.png'); background-size: cover; background-position: center; text-align: center; color: white; padding: 50px 0;">
+  <div class="header" style="background-image: url('images/green-forest.png'); background-size: cover; background-position: center; text-align: center; color: white; padding: 50px 0;">
     <h1>GreenWash</h1>
     <p>Innovate and create the future!</p>
   </div>
@@ -70,7 +74,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <div class="product-container">
     <?php foreach ($products as $product): ?>
         <div class="product">
-            <img src="<?php echo htmlspecialchars($product['image_url']); ?>" 
+            <img src="<?php echo htmlspecialchars($img_dir .$product['image_url']); ?>" 
                  alt="<?php echo htmlspecialchars($product['alt_text']); ?>" 
                  title="<?php echo htmlspecialchars($product['name']); ?>">
             <p><strong><?php echo htmlspecialchars($product['name']); ?></strong></p>
