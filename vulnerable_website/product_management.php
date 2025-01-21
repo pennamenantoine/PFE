@@ -2,6 +2,7 @@
 include 'db.php';
 include 'navbar.php';
 
+
 // Vérifiez si l'utilisateur a un rôle d'administrateur
 if ($result === false) { 
     header("Location: dashboard.php"); // Redirige vers le tableau de bord utilisateur si ce n'est pas un admin
@@ -35,6 +36,15 @@ if ($result === false) {
 	.scrollable-table {
 		max-height: calc(12 * 1.5em);
 		overflow-y: auto;
+    form {
+        margin: 0;
+    }
+    input[type="text"], input[type="number"] {
+        border: none;
+        background: transparent;
+        outline: none;
+        width: 100%;
+    }
 	}
     </style>
 </head>
@@ -45,36 +55,36 @@ if ($result === false) {
     <div class="scrollable-table">
     <table>
         <tr>
-            <th>id</th>
             <th>product_id</th>
             <th>name</th>
             <th>description</th>
             <th>price</th>
             <th>stock</th>
-	    <th>image_url</th>
+	        <th>image_url</th>
             <th>alt_text</th>
             <th>Action</th>
         </tr>
         <?php foreach ($products as $product): ?>
-        <tr>
-            <td><?php echo $product['id']; ?></td>
-            <td><?php echo $product['product_id']; ?></td>
-            <td><?php echo $product['name']; ?></td>
-            <td><?php echo $product['description']; ?></td>
-            <td><?php echo $product['price']; ?></td>
-            <td><?php echo $product['stock']; ?></td>
-            <td><?php echo $product['image_url']; ?></td>
-            <td><?php echo $product['alt_text']; ?></td>
+        <tr> 
             <td>
-		<form action="update_product.php" method="POST">
-                   	<input type="hidden" name="action" value="update">
-                    	<input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-                    	<button type="submit">Update</button>
+                <form action="update_product.php" method="POST">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
+                    <input type="text" name="product_id" value="<?php echo htmlspecialchars($product['product_id']); ?>">
+            </td>
+            <td><input type="text" name="name" value="<?php echo htmlspecialchars($product['name']); ?>"></td>
+            <td><input type="text" name="description" value="<?php echo htmlspecialchars($product['description']); ?>"></td>
+            <td><input type="number" name="price" value="<?php echo htmlspecialchars($product['price']); ?>"></td>
+            <td><input type="number" name="stock" value="<?php echo htmlspecialchars($product['stock']); ?>"></td>
+            <td><input type="text" name="image_url" value="<?php echo htmlspecialchars($product['image_url']); ?>"></td>
+            <td><input type="text" name="alt_text" value="<?php echo htmlspecialchars($product['alt_text']); ?>"></td>
+            <td>
+                <button type="submit">Update</button>
                 </form>
-                <form action="update_product.php" method="POST" onsubmit="return confirm('Confirm Deletion ?');">
- 			<input type="hidden" name="action" value="delete">
-			<input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-                    	<button type="submit">Delete</button>
+                <form action="update_product.php" method="POST" onsubmit="return confirm('Confirm Deletion?');">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
+                    <button type="submit">Delete</button>
                 </form>
             </td>
         </tr>

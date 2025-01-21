@@ -10,9 +10,9 @@ if ($result === false) {
 
 // Vérifier si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
+    $action = $_POST['action'];
     $id = $_POST['id'];
     $product_id = $_POST['product_id'];
-    $action = $_POST['action'];
     $name = $_POST['name'];
     $description = $_POST['description'];
     $price = $_POST['price'];
@@ -22,8 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
 
 // Update product in db
 if ($action == 'update') {
-	$stmt = $conn->prepare("UPDATE products SET product_id = :product_id, name = :name, description = :description, price = :price, stock = :stock, image_url = :image_url, alt_text = :alt_text WHERE product_id = :product_id");
-    	$stmt->bindParam(':product_id', $product_id);
+	$stmt = $conn->prepare("UPDATE products SET product_id = :product_id, name = :name, description = :description, price = :price, stock = :stock, image_url = :image_url, alt_text = :alt_text WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':product_id', $product_id);
     	$stmt->bindParam(':name', $name);
     	$stmt->bindParam(':description', $description);
     	$stmt->bindParam(':price', $price);
