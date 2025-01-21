@@ -47,6 +47,7 @@ body {
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+    include "db.php";
 }
 
 //check if user is authentified
@@ -55,39 +56,53 @@ if (isset($_SESSION['username']))
 
 else
       echo '<a href="login.html" class="right">Login</a>';
+
+$img_dir = "images/";
+
+$stmt = $conn->query("SELECT * FROM products");
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 </div>
 
 <div class="main">
   <h2>Choose your future solution ...</h2>
   <h5>Solar panels or wind turbines</h5>
-  <img src="solar_panels2.jpeg" width="200" height="200" title="Develop Solar Panels" alt="solar panels"/>
-  <br>
-  <img src="Wind_turbine.jpeg" width="200" height="200" title="Develop Solar Panels" alt="solar panels"/>
-  <br>
+  <div class="product-container">
+    <?php foreach ($products as $product): ?>
+        <div class="product">
+            <img src="<?php echo htmlspecialchars($product['image_url']); ?>" 
+                 alt="<?php echo htmlspecialchars($product['alt_text']); ?>" 
+                 title="<?php echo htmlspecialchars($product['name']); ?>">
+            <p><strong><?php echo htmlspecialchars($product['name']); ?></strong></p>
+            <p><?php echo htmlspecialchars($product['description']); ?></p>
+            <p class="price">$<?php echo htmlspecialchars($product['price']); ?>, Stock: <?php echo htmlspecialchars($product['stock']); ?></p>
+        </div>
+    <?php endforeach; ?>
+</div>
+</div>
   <p>We are here with you to build your solution step by step</p>
   <p>Empowering a Sustainable Future with Green Energy</p>
   <p>In today’s world, sustainability is no longer a choice—it’s a responsibility. By embracing green energy solutions, you’re not just powering your operations; you’re fueling a brighter, cleaner future for generations to come.
 
-At GreenWash, we are committed to helping you harness the boundless potential of renewable energy. Whether it’s solar, wind, geothermal, or hybrid systems, we offer tailored solutions that align with your goals and values.
+    At GreenWash, we are committed to helping you harness the boundless potential of renewable energy. Whether it’s solar, wind, geothermal, or hybrid systems, we offer tailored solutions that align with your goals and values.
 
-Why choose green energy?
+  Why choose green energy?
 <br>
-	1.	Cost Efficiency: Reduce your energy bills with renewable sources that deliver long-term savings.
+	  1.	Cost Efficiency: Reduce your energy bills with renewable sources that deliver long-term savings.
 <br>
-	2.	Environmental Impact: Minimize your carbon footprint and contribute to the fight against climate change.
+	  2.	Environmental Impact: Minimize your carbon footprint and contribute to the fight against climate change.
   <br>
-	3.	Energy Independence: Secure your energy needs with reliable, self-sustaining solutions.
+	  3.	Energy Independence: Secure your energy needs with reliable, self-sustaining solutions.
   <br>
-	4.	Future-Ready Technology: Stay ahead with cutting-edge innovations designed to evolve with your needs.
+	  4.	Future-Ready Technology: Stay ahead with cutting-edge innovations designed to evolve with your needs.
 
-Our promise to you
-We provide end-to-end support, from initial consultation to system implementation and maintenance. Together, we will design a solution that integrates seamlessly into your operations while maximizing energy efficiency.
+  Our promise to you
+  We provide end-to-end support, from initial consultation to system implementation and maintenance. Together, we will design a solution that integrates seamlessly into your operations while maximizing energy efficiency.
 
-Join us in leading the transition toward a sustainable energy future. Let’s build smarter, greener solutions that benefit not just your business but the world around us.
+  Join us in leading the transition toward a sustainable energy future. Let’s build smarter, greener solutions that benefit not just your business but the world around us.
 <br>
 <br>
-Contact us today to explore how green energy can revolutionize your journey to success. Together, we can make a difference!
+  Contact us today to explore how green energy can revolutionize your journey to success. Together, we can make a difference!
 </p>
   </div>
 </div>

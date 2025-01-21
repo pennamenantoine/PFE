@@ -12,7 +12,7 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-header("Location: login.html"); // Redirige vers la page de login
+header("Location: index.html"); // Redirige vers la page de login
 exit();
 ?>
 
