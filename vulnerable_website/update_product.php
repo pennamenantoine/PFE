@@ -6,15 +6,12 @@ include "navbar.php";
 if ($result === false) {
     header("Location: dashboard.php"); // Redirige vers le tableau de bord utilisateur si ce n'est pas un admin
     exit();
-} else {
-    // Récupérer tous les produits
-    $stmt = $conn->query("SELECT * FROM products");
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 // Vérifier si le formulaire a été soumis
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id']) && isset($_POST['action'])) {
-    $id = intval($_POST['id']);
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
+    $id = $_POST['id'];
+    $product_id = $_POST['product_id'];
     $action = $_POST['action'];
     $name = $_POST['name'];
     $description = $_POST['description'];
@@ -25,8 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id']) && isset($_POST[
 
 // Update product in db
 if ($action == 'update') {
-	$stmt = $conn->prepare("UPDATE products SET name = :name, description = :description, price = :price, stock = :stock, image_url = :image_url, alt_text = :alt-text WHERE id = :id");
-    	$stmt->bindParam(':id', $id);
+	$stmt = $conn->prepare("UPDATE products SET product_id = :product_id, name = :name, description = :description, price = :price, stock = :stock, image_url = :image_url, alt_text = :alt_text WHERE product_id = :product_id");
+    	$stmt->bindParam(':product_id', $product_id);
     	$stmt->bindParam(':name', $name);
     	$stmt->bindParam(':description', $description);
     	$stmt->bindParam(':price', $price);
@@ -42,15 +39,16 @@ if ($action == 'delete') {
 
 
 if ($action == 'insert') {
-	$stmt = $conn->prepare("INSERT INTO products (name, description, price, stock, image_url, alt_text) VALUES (:name, :description, :price, :stock, :image_url, :alt_text)");
+	$stmt = $conn->prepare("INSERT INTO products (product_id, name, description, price, stock, image_url, alt_text) VALUES (:product_id, :name, :description, :price, :stock, :image_url, :alt_text)");
+        $stmt->bindParam(':product_id', $product_id);
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':price', $price);
         $stmt->bindParam(':stock', $stock);
         $stmt->bindParam(':image_url', $image_url);
         $stmt->bindParam(':alt_text', $alt_text);
-    }
 
+}
     // Exécuter la mise à jour et vérifier le succès
     if ($stmt->execute()) {
         header("Location: product_management.php?success=action completed successfully");
