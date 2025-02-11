@@ -1,0 +1,60 @@
+/* General header styling */
+header {
+    background-color: #333; /* Dark background */
+    color: white;
+    padding: 15px 20px; /* Increase padding to enlarge the navbar */
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation bar container */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Space between left and right menus */
+    align-items: center;
+}
+
+/* Left menu (Dashboard) */
+.left-menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+/* Right menu (other links) */
+.right-menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 15px; /* Spacing between nav items */
+}
+
+/* Common styles for menu items */
+.left-menu li, .right-menu li {
+    margin: 0;
+}
+
+.left-menu li a, .right-menu li a {
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px; /* Adjust padding to increase link size */
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect */
+.left-menu li a:hover, .right-menu li a:hover {
+    background-color: #555;
+}
+
+/* Add padding to body to prevent overlap */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    padding-top: 80px; /* Increase padding-top based on navbar height */
+}
