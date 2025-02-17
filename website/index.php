@@ -34,10 +34,13 @@ p {
     width:100%;
   }
 }
+/* style="background-image: url('images/green-forest.jpeg'); background-size: cover; background-position: center; text-align: center; color: white; padding: 50px 0;"> */
+ 
 </style>
 </head>
 <body>
-  <div class="header" style="background-image: url('images/green-forest.png'); background-size: cover; background-position: center; text-align: center; color: white; padding: 50px 0;">
+ 
+  <div class="header"> 
     <h1>GreenWash</h1>
     <p>Innovate and create the future!</p>
   </div>
@@ -49,9 +52,10 @@ p {
 
 
 <?php
+require_once "db.php";
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-    include "db.php";
 }
 
 //check if user is authentified

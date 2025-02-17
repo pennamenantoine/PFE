@@ -1,10 +1,13 @@
 <?php
+
 //check if user is authentified
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-if (!isset($_SESSION['id'])) 
+if (!isset($_SESSION['id'])) {
     $connection = 0;
+    echo '<a href="index.php" style="display: inline-block; margin-bottom: 10px; text-decoration: none; color: blue;">&larr; Home</a>';
+    }
 else
     $connection = 1;
 

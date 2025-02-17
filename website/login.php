@@ -2,6 +2,7 @@
 session_start();
 include "db.php";
 
+
 // NE PAS UTILISER - Vulnérable aux injections SQL
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['username']) && isset($_POST['password'])) {

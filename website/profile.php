@@ -3,6 +3,9 @@
 include "db.php";
 
 include 'navbar.php';
+//nonce for javascript
+$nonce = base64_encode(random_bytes(16));
+header("Content-Security-Policy: script-src 'self' 'nonce-$nonce'");
 
 $id = $_SESSION['id'];
 $uploadDir = "uploads/";
@@ -41,7 +44,7 @@ if (isset($_GET['param_img'])) {
     <title>Update Profile</title>
     <link rel="stylesheet" href="signup.css">
 </head>
-<body>
+<body id="profile.php">
     <div class="signup-container">
 	<main>
         <h2><?php echo htmlspecialchars($_SESSION['username']); ?> Profile</h2>
@@ -50,15 +53,17 @@ if (isset($_GET['param_img'])) {
 	    <a href="upload.php">update photo</a>
         <img src="<?php echo $picture; ?>" style="width:100%; max-width: 300px; max-height: 300px; object-fit: cover;">
         <input type="text" name="picture" value="<?php echo $picture; ?>" hidden>
+
 	    <label id="enable_email_field" style="color: blue; cursor: pointer; text-decoration: underline;">update email</label>
             <input type="email" id="email" name="email" value=<?php echo htmlspecialchars("$email");?> readonly>
-	    <script>
-                document.getElementById("enable_email_field").addEventListener("click", function() {
-			document.getElementById("email").removeAttribute("readonly");
-		});
-    	    </script>
-            <label id="password_update" style="color: blue; cursor: pointer; text-decoration: underline;">update password</label>
-	    <script>
+        <script nonce="<?php echo $nonce; ?>">
+            document.getElementById("enable_email_field").addEventListener("click", function() {
+            document.getElementById("email").removeAttribute("readonly");
+            });
+        </script>
+        
+        <label id="password_update" style="color: blue; cursor: pointer; text-decoration: underline;">update password</label>
+	    <script nonce="<?php echo $nonce; ?>">
                 document.getElementById("password_update").addEventListener("click", function() {
                         document.getElementById("old_password").removeAttribute("hidden");
                         document.getElementById("new_password").removeAttribute("hidden");
