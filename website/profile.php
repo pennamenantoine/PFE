@@ -1,11 +1,8 @@
 <?php
-//session_start();
-include "db.php";
 
+include "db.php";
 include 'navbar.php';
 //nonce for javascript
-$nonce = base64_encode(random_bytes(16));
-header("Content-Security-Policy: script-src 'self' 'nonce-$nonce'");
 
 $id = $_SESSION['id'];
 $uploadDir = "uploads/";
