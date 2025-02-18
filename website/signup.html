@@ -9,17 +9,74 @@
 <body>
     <div class="signup-container">
         <h2>Create Account</h2>
-        <form action="signup.php" method="post">
+        <form action="signup.php" method="post" id="signup-form">
             <input type="text" placeholder="Username" name="username" required>
             <input type="email" placeholder="Email" name="email" required>
-            <input type="password" placeholder="Password" name="password" required>
-            <input type="password" placeholder="Confirm Password" name="confirm_password" required>
-            <button type="submit">Sign Up</button>
+
+            <input type="password" id="password" placeholder="Password" name="password" required>
+            <p id="password-error" style="color: red; display: none;">
+                Password must be at least 8 characters long, contain 1 digit, and 1 special character.
+            </p>
+
+            <input type="password" id="confirm-password" placeholder="Confirm Password" name="confirm_password" required>
+            <p id="confirm-password-error" style="color: red; display: none;">
+                Passwords do not match.
+            </p>
+
+            <button type="submit" id="submit-btn" disabled>Sign Up</button>
         </form>
+
         <div class="login-link">
             <p>Already have an account? <a href="login.html">Login here</a></p>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const passwordField = document.getElementById("password");
+            const confirmPasswordField = document.getElementById("confirm-password");
+            const submitButton = document.getElementById("submit-btn");
+
+            const passwordError = document.getElementById("password-error");
+            const confirmPasswordError = document.getElementById("confirm-password-error");
+
+            function validatePassword() {
+                const password = passwordField.value;
+                const regex = /^(?=.*\d)(?=.*[\W_]).{8,}$/; // Password must have 8+ chars, 1 digit, 1 special char
+
+                if (!regex.test(password)) {
+                    passwordError.style.display = "block";
+                    passwordField.style.border = "2px solid red";
+                    return false;
+                } else {
+                    passwordError.style.display = "none";
+                    passwordField.style.border = "2px solid green";
+                    return true;
+                }
+            }
+
+            function validateConfirmPassword() {
+                if (passwordField.value !== confirmPasswordField.value) {
+                    confirmPasswordError.style.display = "block";
+                    confirmPasswordField.style.border = "2px solid red";
+                    return false;
+                } else {
+                    confirmPasswordError.style.display = "none";
+                    confirmPasswordField.style.border = "2px solid green";
+                    return true;
+                }
+            }
+
+            function validateForm() {
+                const isPasswordValid = validatePassword();
+                const isConfirmPasswordValid = validateConfirmPassword();
+                submitButton.disabled = !(isPasswordValid && isConfirmPasswordValid);
+            }
+
+            passwordField.addEventListener("input", validateForm);
+            confirmPasswordField.addEventListener("input", validateForm);
+        });
+    </script>
 </body>
 </html>
 
