@@ -5,7 +5,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once "db.php"; // Ensure database connection
 
-$connection = 0; // Set default connection status
+$lockout_time = 300; // Lockout duration in seconds (5 minutes)
+$max_attempts = 3; // Maximum allowed failed login attempts
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['username']) && isset($_POST['password'])) {
@@ -15,37 +16,56 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Sanitize input to prevent XSS
         $username = htmlspecialchars($username);
 
+        // Check if the user is locked out
+        $stmt = $conn->prepare("SELECT failed_attempts, lockout_until FROM users WHERE username = ?");
+        $stmt->execute([$username]);
+        $failedLogin = $stmt->fetch();
+
+        if ($failedLogin && !empty($failedLogin['lockout_until']) && strtotime($failedLogin['lockout_until']) > time()) {
+            echo "Account locked. Try again later.";
+            exit();
+        }
+
         // Query database for user
         $stmt = $conn->prepare("SELECT id, username, password, role, email FROM users WHERE username = ?");
         $stmt->execute([$username]);
         $user = $stmt->fetch();
 
         if (!$user || !password_verify($password, $user['password'])) {
-            // Log failed login attempt
-            error_log("FAILED LOGIN: Username: $username | IP: " . $_SERVER['REMOTE_ADDR'] . " | Time: " . date("Y-m-d H:i:s") . "\n", 3, __DIR__ . "/../logs/security.log");
-            $connection = 0;
-            echo "Invalid Username or Password.";
-        } else {
-            // Successful authentication
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['id'] = intval($user['id']);
-            
-            // Regenerate session ID to prevent session fixation
-            session_regenerate_id(true); //Regenerating the session ID on login to prevent session fixation attacks
+            // Update failed attempts
+            if ($user) {
+                $attempts = $failedLogin['failed_attempts'] + 1;
 
-            $connection = 1;
-            echo "Login successful!";
+                if ($attempts >= $max_attempts) {
+                    $lockout_until = date("Y-m-d H:i:s", time() + $lockout_time);
+                    $stmt = $conn->prepare("UPDATE users SET failed_attempts = ?, lockout_until = ? WHERE username = ?");
+                    $stmt->execute([$attempts, $lockout_until, $username]);
+                    echo "Account locked. Try again later.";
+                } else {
+                    $stmt = $conn->prepare("UPDATE users SET failed_attempts = ? WHERE username = ?");
+                    $stmt->execute([$attempts, $username]);
+                    echo "Invalid Username or Password.";
+                }
+            } else {
+                echo "Invalid Username or Password.";
+            }
+            exit();
         }
-    }
-} else {
-    $connection = 0;
-    echo "Form was not submitted correctly.";
-}
 
-if ($connection == 1) {
-    header("Location: dashboard.php");
-    exit();
+        // Successful login: reset failed attempts
+        $stmt = $conn->prepare("UPDATE users SET failed_attempts = 0, lockout_until = NULL WHERE username = ?");
+        $stmt->execute([$username]);
+
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['role'] = $user['role'];
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['id'] = intval($user['id']);
+
+        session_regenerate_id(true); // Prevent session fixation
+
+        header("Location: dashboard.php");
+        exit();
+    }
 }
+echo "Form was not submitted correctly.";
 ?>

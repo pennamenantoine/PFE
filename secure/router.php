@@ -24,7 +24,7 @@ $nonce = base64_encode(random_bytes(16)); // Generate a unique nonce
     base-uri 'self';  // Prevents attackers from changing the base URL for relative links (reduces phishing risks) 
     form-action 'self';  // Ensures forms can only be submitted to your own website 
 "); */
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-$nonce'; style-src 'self' 'unsafe-inlin>");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-$nonce'; style-src 'self' 'nonce-$nonce'; img-src 'self' data:; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;");
 // Strict-Transport-Security (HSTS)     Forces HTTPS for all requests. preload makes browsers enforce it.
 header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
 // X-Frame-Options      Prevents clickjacking attacks (DENY means no iframes allowed).
@@ -38,11 +38,20 @@ header("Referrer-Policy: no-referrer-when-downgrade");
 // Permissions-Policy   Controls access to browser features like microphone, camera, and geolocation.
 header("Permissions-Policy: geolocation=(), microphone=(), camera=()");
 // Access-Control-Allow-Origin  Restricts cross-origin requests (CORS). 'self' means only the same origin can access.
-header("Access-Control-Allow-Origin: 'self'");
+header("Access-Control-Allow-Origin: self");
 // Access-Control-Allow-Methods Limits HTTP methods allowed in requests.
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 // Access-Control-Allow-Headers Specifies which headers are allowed in requests.
 header("Access-Control-Allow-Headers: Content-Type");
+//Certificate Transparency (CT) aims to prevent the use of misissued certificates for that site from going unnoticed.
+header("Expect-CT: max-age=86400, enforce");
+//Cross Origin Ressource Policy (CORP)
+//deny access to our ressources from other websites
+header("Cross-Origin-Resource-Policy: same-origin");
+//Cross-Origin Opener Policy (COOP)
+header("Cross-Origin-Opener-Policy: same-origin");
+//Cross-Origin Embedder Policy (COEP)
+header("Cross-Origin-Embedder-Policy: require-corp");
 
 // Get the requested URI
 $request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
