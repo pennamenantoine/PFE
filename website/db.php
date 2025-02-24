@@ -1,5 +1,12 @@
 <?php
 
+function error_stmt ($error_st){
+    // Log error to a file for debugging purposes
+    error_log("MySQL Error: " . $error_st, 3, './logs/errors.log');
+    // Display a friendly message to the user
+    echo "There was an error processing your request. Please try again later.";
+}
+
 // Check if the encrypted file exists
 $CONFIG_FILE = '../secure/config.php';
 
@@ -27,7 +34,8 @@ try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8mb4", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    die("Connection Error: " . $e->getMessage());
+    $error_st = "Connection Error: . $e->getMessage()";
+    error_stmt ($error_st);
 }
 ?>
 
