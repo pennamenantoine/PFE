@@ -1,7 +1,7 @@
 <?php
 
 session_set_cookie_params([
-    'lifetime' => 0, // Cookie expires when the browser is closed
+    'lifetime' => 86400, // Cookie lasts 1 day, 0 Cookie expires when the browser is closed
     'path' => '/', // Available across the entire domain
     'domain' => '', // Leave empty to use the current domain
     'secure' => isset($_SERVER['HTTPS']), // Enable Secure flag if HTTPS is used
@@ -10,6 +10,21 @@ session_set_cookie_params([
 ]);
 
 session_start();
+
+function generateCSRFToken() {
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Secure random token
+    }
+    return $_SESSION['csrf_token'];
+}
+
+// Set CSRF token in an HttpOnly cookie
+setcookie('csrf_token', generateCSRFToken(), [
+    'secure' => true,      // Only send over HTTPS
+    'httponly' => true,    // Prevent access via JavaScript
+    'samesite' => 'Strict' // Mitigates CSRF (use 'Lax' for login forms)
+]);
+
 $nonce = base64_encode(random_bytes(16)); // Generate a unique nonce
 
 /* header("Content-Security-Policy: 
@@ -24,7 +39,8 @@ $nonce = base64_encode(random_bytes(16)); // Generate a unique nonce
     base-uri 'self';  // Prevents attackers from changing the base URL for relative links (reduces phishing risks) 
     form-action 'self';  // Ensures forms can only be submitted to your own website 
 "); */
-header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-$nonce'; style-src 'self' 'nonce-$nonce'; img-src 'self' data:; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;");
+
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-$nonce'; style-src 'self' 'nonce-$nonce'; img-src 'self' data:; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;report-uri http://127.0.0.1:8000/csp-violation-report-endpoint/");
 // Strict-Transport-Security (HSTS)     Forces HTTPS for all requests. preload makes browsers enforce it.
 header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
 // X-Frame-Options      Prevents clickjacking attacks (DENY means no iframes allowed).
@@ -53,6 +69,7 @@ header("Cross-Origin-Opener-Policy: same-origin");
 //Cross-Origin Embedder Policy (COEP)
 header("Cross-Origin-Embedder-Policy: require-corp");
 
+
 // Get the requested URI
 $request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -74,5 +91,17 @@ if (file_exists($script_filename) && !is_dir($script_filename)) {
 }
 
 // Otherwise, forward to index.php (main PHP file)
+$url = $_SERVER['REQUEST_URI'];
+
+// Check if the requested URL is a directory without an index file
+if (is_dir(__DIR__ . $url) && !file_exists(__DIR__ . $url . '/index.php') && !file_exists(__DIR__ . $url . '/index.html')) {
+    // If it’s a directory without an index file, return a 403 Forbidden response
+    header("HTTP/1.1 403 Forbidden");
+    exit('Forbidden');
+}
+
+// Otherwise, serve the request as normal
+return false;
+
 require_once __DIR__ . '/../website/index.php';
 ?>
