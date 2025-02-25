@@ -2,6 +2,10 @@
 include "db.php";
 include "navbar.php";
 
+function validateCSRFToken($csrfToken) {
+    return hash_equals($_SESSION['csrf_token'] ?? '', $csrfToken);
+}
+
 // Vérifiez si l'utilisateur a un rôle d'administrateur
 if ($result === false) { 
     header("Location: dashboard.php"); // Redirige vers le tableau de bord utilisateur si ce n'est pas un admin
@@ -15,6 +19,11 @@ if ($result === false) {
 
 // Vérifier si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id']) && isset($_POST['role'])) {
+    if (!isset($_POST['csrf_token'], $_SESSION['csrf_token']) ||
+        !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        die('CSRF validation failed.');
+    }
+
     $userId = intval($_POST['user_id']);
     $newRole = $_POST['role'];
 

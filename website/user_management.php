@@ -2,12 +2,24 @@
 include 'db.php';
 include 'navbar.php';
 
-// Vérifiez si l'utilisateur a un rôle d'administrateur
+// Ensure only admins can access this page
 if ($result === false) { 
     header("Location: dashboard.php"); // Redirige vers le tableau de bord utilisateur si ce n'est pas un admin
     exit();
 } else {
-    // Récupérer tous les utilisateurs
+    // Generate CSRF token if it doesn't exist
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+
+    // Set CSRF token in HttpOnly cookie
+    setcookie('csrf_token', $_SESSION['csrf_token'], [
+        'httponly' => true,
+        'secure' => true, // Ensure HTTPS is used
+        'samesite' => 'Strict' // Restrict to same-site requests
+    ]);
+
+    // Fetch all users securely
     $stmt = $conn->query("SELECT * FROM users");
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -58,6 +70,7 @@ if ($result === false) {
             <td><?php echo $user['email']; ?></td>
             <td>
                 <form action="update_user_role.php" method="POST" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                     <select name="role">
                         <option value="user" <?php echo $user['role'] === 'user' ? 'selected' : ''; ?>>User</option>
                         <option value="admin" <?php echo $user['role'] === 'admin' ? 'selected' : ''; ?>>Admin</option>
@@ -68,7 +81,8 @@ if ($result === false) {
             </td>
             <td>
                 <form action="delete_user.php" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
-                    <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">    
+                <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
                     <button type="submit">Delete</button>
                 </form>
             </td>
@@ -78,6 +92,7 @@ if ($result === false) {
     </div>
     <h2>Add New User</h2>
     <form action="signup.php" method="POST">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
         <input type="text" name="username" placeholder="Username" required>
         <input type="email" name="email" placeholder="Email" required>
         <select name="role">
