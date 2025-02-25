@@ -16,7 +16,7 @@ fi
 
 # Start PHP server with custom host
 echo "Starting PHP server on $SERVER_HOST..."
-php -S "$SERVER_HOST":8000 -t  ../website/ router.php &  
+sudo php -S "$SERVER_HOST":443 -t  ../website/ router.php -d ssl.key_file=server.key -d ssl.cert_file=server.crt &
 PHP_PID=$!  # Capture PHP server process ID
 
 # Function to stop PHP server and clean environment
