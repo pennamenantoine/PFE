@@ -12,8 +12,9 @@ $result = $conn->query($sql);
 $email = $result->fetchColumn();
 
 
-if (isset($_GET['param_img'])) {
-    $picture = $_GET['param_img'];
+if (isset($_SESSION['uploaded_image'])) {
+    $picture = $_SESSION['uploaded_image'];
+    unset($_SESSION['uploaded_image']);
 } else {
     $sql = "SELECT file_path FROM images WHERE user_id = '$id'";
     $result = $conn->query($sql);
@@ -30,7 +31,6 @@ if (isset($_GET['param_img'])) {
     }
 }
 
-   
 ?>
 
 <!DOCTYPE html>
@@ -58,7 +58,7 @@ if (isset($_GET['param_img'])) {
             document.getElementById("email").removeAttribute("readonly");
             });
         </script>
-        
+
         <label id="password_update" style="color: blue; cursor: pointer; text-decoration: underline;">update password</label>
 	    <script nonce="<?php echo $nonce; ?>">
                 document.getElementById("password_update").addEventListener("click", function() {
@@ -76,7 +76,6 @@ if (isset($_GET['param_img'])) {
 	if (isset ($_GET['param'])){
         //echo $_GET['param'];
 		echo "Profile updated successfully";
-        
     }
 	?>
     </div>

@@ -1,41 +1,50 @@
 <?php
 $target_dir = "uploads/";
 if (!is_dir($target_dir)) {
-	mkdir($target_dir, 0777, true);
-}
-$uploadOk = 1;
-$message = "";
-
-// Prepare file path
-$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-$file_extension = pathinfo($target_file, PATHINFO_EXTENSION);
-$mime_type = $_FILES["fileToUpload"]["type"];
-
-// Blacklist
-$excluded_extensions = ['php', 'phtml', 'js', 'sh', 'bash', 'zsh', 'exe', 'bin', 'app', 'msi', 'dll', 'so', 'pdb', 'asp', 'aspx', 'pl', 'cgi', 'py', 'swf', 'flv', 'docm', 'xlsm', 'pptm'];
-$excluded_mime_types = ['text/php', 'application/x-php', 'text/html', 'application/javascript', 'application/x-sh'];
-
-//Check if the file extension is in the excluded list
-if (in_array($file_extension, $excluded_extensions) || in_array($mime_type, $excluded_mime_types)) {
-	$message .= "File type not allowed. ";
-	$uploadOk = 0;
+    mkdir($target_dir, 0777, true);
 }
 
-// Check if file upload was successful
-if ($uploadOk == 0) {
-	$message .= "Your file was not uploaded. ";
-   	header("Location: upload.php?message=" . urlencode($message));  // Redirect with the message
- 	exit;
+$maxFileSize = 2 * 1024 * 1024; // 2MB
+$allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+if (!isset($_FILES['fileToUpload']) || $_FILES['fileToUpload']['error'] !== UPLOAD_ERR_OK) {
+    die("There was an error while uploading the file.");
+}
+
+// file check
+$fileTmpPath = $_FILES['fileToUpload']['tmp_name'];
+$fileSize = $_FILES['fileToUpload']['size'];
+$fileMimeType = mime_content_type($fileTmpPath);
+$fileExtension = strtolower(pathinfo($_FILES['fileToUpload']['name'], PATHINFO_EXTENSION));
+
+// check if file is a real image
+if (!getimagesize($fileTmpPath)) {
+    die("file is not a valid image.");
+}
+
+// check extension and mime type
+if (!in_array($fileExtension, $allowedExtensions) || !in_array($fileMimeType, $allowedMimeTypes)) {
+    die("file type not allowed.");
+}
+
+// check file size
+if ($fileSize > $maxFileSize) {
+    die("file is too large. Max size allowed : 2MB.");
+}
+
+// rename file on the server
+$newFileName = uniqid() . '.' . $fileExtension;
+$destination = $target_dir . $newFileName;
+$_SESSION['uploaded_image'] = $destination;
+
+// move the file
+if (move_uploaded_file($fileTmpPath, $destination)) {
+    // redirection with secure path
+    header("Location: profile.php");
+//    header("Location: profile.php?param_img=" . urlencode($destination));
+    exit;
 } else {
-    // move the uploaded file
-    	if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        	$message .= "The file " . htmlspecialchars(basename($_FILES["fileToUpload"]["name"])) . " has been uploaded. ";
-        	header("Location: profile.php?param_img=$target_file");  // Redirect to profile with the file path
-		exit;
-    	} else {
-        	$message .= "Sorry, there was an error uploading your file. ";
-        	header("Location: upload.php?message=" . urlencode($message));  // Redirect with error message
-        	exit;
-    	}
+    die("There was an error while moving the file.");
 }
 ?>

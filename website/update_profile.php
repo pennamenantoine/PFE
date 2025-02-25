@@ -15,12 +15,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		//$nb = 'YES!!!!!!!';
 		$sql_img = "UPDATE images set file_path = '$newImagePath' WHERE user_id = $id";
 		$result_img = $conn->query($sql_img);
-		
+
 		if ($result_img) {
-			
+
 			if ($conn->info > 0) {
 				echo "Image path updated successfully.";
-			} 
+			}
 			else {
 				echo "Error in photo update.";
 			}
@@ -35,8 +35,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		}
 	}
 
-
-	
 	$email = $_POST['email'];
 	if (empty($_POST['old_password']) && empty($_POST['new_password']) && empty($_POST['confirm_new_password'])) {
 		$sql = "UPDATE users set email = '$email' WHERE id = '$id'";
@@ -50,9 +48,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			echo "error in profile update";
 	}
 	else {
-		$old_password = hash('md5', $_POST['old_password']);
-		$new_password = hash('md5', $_POST['new_password']);
-		$confirm_new_password = hash('md5', $_POST['confirm_new_password']);
+		$old_password = password_hash($_POST['old_password'], PASSWORD_ARGON2ID);
+		$new_password = password_hash($_POST['new_password'], PASSWORD_ARGON2ID);
+		$confirm_new_password = password_hash($_POST['confirm_new_password'], PASSWORD_ARGON2ID);
 		if ($new_password == $confirm_new_password) {
 			$sql = "SELECT password FROM users WHERE username = '$username'";
 			$result = $conn->query($sql);
