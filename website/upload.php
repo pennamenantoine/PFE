@@ -16,7 +16,7 @@ if (isset($_GET['message'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Image</title>
-    <style>
+    <style nonce="<?= $nonce; ?>">
         /* Add space below the message */
         .alert {
             margin-bottom: 20px;  /* Adds space between the message and the form */

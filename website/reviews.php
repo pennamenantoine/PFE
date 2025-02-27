@@ -48,7 +48,7 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Review Management</title>
-    <style>
+    <style nonce="<?= $nonce; ?>">
         table {
             width: 100%;
             border-collapse: collapse;

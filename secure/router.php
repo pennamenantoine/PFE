@@ -75,33 +75,38 @@ $request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 // Check for directory traversal (LFI attempt)
 if (strpos($request_uri, '..') !== false) {
-    // Redirect to home page if a LFI attempt is detected
-    header("Location: /");
+    header("Location: /"); // Redirect to home page
     exit();
 }
 
-// Serve static files (CSS, JS, images)
-$request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$basePath = __DIR__ . '/../website'; // Point to the 'website' directory
+// Document root (../website)
+$basePath = realpath(__DIR__ . '/../website');
 
+// Resolve the target file path
 $script_filename = $basePath . $request_uri;
 
+// Serve static files if they exist (CSS, JS, images)
 if (file_exists($script_filename) && !is_dir($script_filename)) {
-    return false; // Let PHP's built-in server handle static files
+    return false; // Let PHP's built-in server handle it
 }
 
-// Otherwise, forward to index.php (main PHP file)
-$url = $_SERVER['REQUEST_URI'];
-
-// Check if the requested URL is a directory without an index file
-if (is_dir(__DIR__ . $url) && !file_exists(__DIR__ . $url . '/index.php') && !file_exists(__DIR__ . $url . '/index.html')) {
-    // If it’s a directory without an index file, return a 403 Forbidden response
-    header("HTTP/1.1 403 Forbidden");
-    exit('Forbidden');
+// Handle directory access (e.g., /admin/)
+if (is_dir($script_filename)) {
+    // Check for an index.php or index.html file
+    if (file_exists($script_filename . '/index.php')) {
+        require $script_filename . '/index.php';
+        exit();
+    } elseif (file_exists($script_filename . '/index.html')) {
+        require $script_filename . '/index.html';
+        exit();
+    } else {
+        // Directory without an index file: 403 Forbidden
+        header("HTTP/1.1 403 Forbidden");
+        exit('Access Forbidden');
+    }
 }
 
-// Otherwise, serve the request as normal
-return false;
-
-require_once __DIR__ . '/../website/index.php';
+// Fallback: Serve main index.php
+require $basePath . '/index.php';
+exit();
 ?>

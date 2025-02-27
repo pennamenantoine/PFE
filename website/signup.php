@@ -18,7 +18,9 @@ function redirect($message) {
             echo "$message <a href='signup.html'>Sign Up</a>";
         }    
     } else {
-        echo "$message <a href='user_management.php'>User Management</a>";
+        //echo "$message <a href='user_management.php'>User Management</a>";
+        header("Location: user_management.php?success=$message");
+
     }
     // End the script execution after showing the message
     exit();
