@@ -65,7 +65,7 @@ if (isset($_SESSION['username']))
 else
       echo '<a href="login.html" class="right">Login</a>';
 
-$img_dir = "/../images/";
+$img_dir = "./images/";
 
 $stmt = $conn->query("SELECT * FROM products");
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -5,7 +5,7 @@ include 'navbar.php';
 //nonce for javascript
 
 $id = $_SESSION['id'];
-$uploadDir = "../uploads/";
+$uploadDir = "./uploads/";
 
 $sql = "SELECT email from users where id= '$id'";
 $result = $conn->query($sql);

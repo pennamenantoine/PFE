@@ -78,7 +78,6 @@ header("Cross-Origin-Opener-Policy: same-origin");
 //Cross-Origin Embedder Policy (COEP)
 header("Cross-Origin-Embedder-Policy: require-corp");
 
-
 // Get the requested URI
 $request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -110,6 +109,7 @@ if (empty($_SERVER['HTTP_REFERER'])) {
 if (file_exists($script_filename)) {
     return false; // Let the app access valid internal resources
 }
+
 
 // Fallback: Always load the main `index.php`
 require $basePath . '/index.php';
