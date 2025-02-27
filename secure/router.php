@@ -73,40 +73,36 @@ header("Cross-Origin-Embedder-Policy: require-corp");
 // Get the requested URI
 $request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// Check for directory traversal (LFI attempt)
-if (strpos($request_uri, '..') !== false) {
-    header("Location: /"); // Redirect to home page
-    exit();
-}
-
 // Document root (../website)
 $basePath = realpath(__DIR__ . '/../website');
 
 // Resolve the target file path
-$script_filename = $basePath . $request_uri;
+$script_filename = realpath($basePath . $request_uri);
 
-// Serve static files if they exist (CSS, JS, images)
-if (file_exists($script_filename) && !is_dir($script_filename)) {
-    return false; // Let PHP's built-in server handle it
+// Ensure the requested file is inside the website directory
+if (!$script_filename || strpos($script_filename, $basePath) !== 0) {
+    header("HTTP/1.1 403 Forbidden");
+    exit('Access Forbidden.');
 }
 
-// Handle directory access (e.g., /admin/)
-if (is_dir($script_filename)) {
-    // Check for an index.php or index.html file
-    if (file_exists($script_filename . '/index.php')) {
-        require $script_filename . '/index.php';
-        exit();
-    } elseif (file_exists($script_filename . '/index.html')) {
-        require $script_filename . '/index.html';
-        exit();
-    } else {
-        // Directory without an index file: 403 Forbidden
-        header("HTTP/1.1 403 Forbidden");
-        exit('Access Forbidden');
-    }
+// Allow direct access only to `/` (homepage) and `/index.php`
+if ($request_uri === '/' || $request_uri === '/index.php') {
+    require $basePath . '/index.php';
+    exit();
 }
 
-// Fallback: Serve main index.php
+// Block all other direct user access by HTTP_REFERER: the parent and should be in the website
+if (empty($_SERVER['HTTP_REFERER'])) {
+    header("HTTP/1.1 403 Forbidden");
+    exit('Access Forbidden.');
+}
+
+// Allow internal app execution (for includes and requires)
+if (file_exists($script_filename)) {
+    return false; // Let the app access valid internal resources
+}
+
+// Fallback: Always load the main `index.php`
 require $basePath . '/index.php';
 exit();
 ?>
