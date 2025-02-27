@@ -25,6 +25,15 @@ setcookie('csrf_token', generateCSRFToken(), [
     'samesite' => 'Strict' // Mitigates CSRF (use 'Lax' for login forms)
 ]);
 
+// Check if the config file exists
+$CONFIG_FILE = './config.php';
+
+// If the config file doesn't exist, show an error
+if (!file_exists($CONFIG_FILE)) {
+    echo "Error: config file '$CONFIG_FILE' not found!";
+    exit(1);
+}
+
 $nonce = base64_encode(random_bytes(16)); // Generate a unique nonce
 
 /* header("Content-Security-Policy: 

@@ -2,18 +2,9 @@
 
 function error_stmt ($error_st){
     // Log error to a file for debugging purposes
-    error_log("MySQL Error: " . $error_st, 3, './logs/errors.log');
+    error_log("MySQL Error: " . $error_st, 3, './../logs/db.log');
     // Display a friendly message to the user
     echo "There was an error processing your request. Please try again later.";
-}
-
-// Check if the encrypted file exists
-$CONFIG_FILE = '../secure/config.php';
-
-// If the config file doesn't exist, show an error
-if (!file_exists($CONFIG_FILE)) {
-    echo "Error: config file '$CONFIG_FILE' not found!";
-    exit(1);
 }
 
 // Include the config file and assign values
