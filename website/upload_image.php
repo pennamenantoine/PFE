@@ -1,7 +1,7 @@
 <?php
 $target_dir = "./uploads/";
 if (!is_dir($target_dir)) {
-    mkdir($target_dir, 0777, true);
+    mkdir($target_dir, 0755, true);
 }
 
 $maxFileSize = 2 * 1024 * 1024; // 2MB
@@ -15,11 +15,14 @@ if (!isset($_FILES['fileToUpload']) || $_FILES['fileToUpload']['error'] !== UPLO
 // file check
 $fileTmpPath = $_FILES['fileToUpload']['tmp_name'];
 $fileSize = $_FILES['fileToUpload']['size'];
-$fileMimeType = mime_content_type($fileTmpPath);
 $fileExtension = strtolower(pathinfo($_FILES['fileToUpload']['name'], PATHINFO_EXTENSION));
+// finfo() to check the mime type
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+$fileMimeType = finfo_file($finfo, $fileTmpPath);
+finfo_close($finfo);
 
-// check if file is a real image
-if (!getimagesize($fileTmpPath)) {
+// check if file is a real image, use @ to delete warnings
+if (!@getimagesize($fileTmpPath)) {
     die("file is not a valid image.");
 }
 
@@ -28,21 +31,29 @@ if (!in_array($fileExtension, $allowedExtensions) || !in_array($fileMimeType, $a
     die("file type not allowed.");
 }
 
+// Check metadata
+if (!$imageData = getimagesize($fileTmpPath)) {
+    die("File is not a valid image.");
+}
+
+// Check image dimension
+if ($imageData[0] <= 0 || $imageData[1] <= 0) {
+    die("Invalid image dimensions.");
+}
+
 // check file size
 if ($fileSize > $maxFileSize) {
     die("file is too large. Max size allowed : 2MB.");
 }
 
 // rename file on the server
-$newFileName = uniqid() . '.' . $fileExtension;
+$newFileName = bin2hex(random_bytes(16)) . '.' . 'jpg';
 $destination = $target_dir . $newFileName;
 $_SESSION['uploaded_image'] = $destination;
 
 // move the file
 if (move_uploaded_file($fileTmpPath, $destination)) {
-    // redirection with secure path
     header("Location: profile.php");
-//    header("Location: profile.php?param_img=" . urlencode($destination));
     exit;
 } else {
     die("There was an error while moving the file.");

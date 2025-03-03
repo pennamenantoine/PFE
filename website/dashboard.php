@@ -1,4 +1,9 @@
 <?php
+if (!isset($_SESSION['id'])) {
+    header('Location: index.php');
+    exit();
+}
+
 include 'navbar.php'; // user can be admin or standard user
 ?>
 

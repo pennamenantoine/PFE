@@ -1,27 +1,28 @@
 <?php
+if (!isset($_SESSION['id'])) {
+    header("Location: index.php");
+    exit();
+}
+
 include 'db.php';
 include 'navbar.php';
 
 // Ensure only admins can access this page
-if ($result === false) { 
-    header("Location: dashboard.php"); // Redirige vers le tableau de bord utilisateur si ce n'est pas un admin
+if ($result === false) {
+    header("Location: dashboard.php"); // Redirection to dashboard admin
     exit();
 } else {
     // Generate CSRF token if it doesn't exist
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }
-
-    // Set CSRF token in HttpOnly cookie
-    setcookie('csrf_token', $_SESSION['csrf_token'], [
-        'httponly' => true,
-        'secure' => true, // Ensure HTTPS is used
-        'samesite' => 'Strict' // Restrict to same-site requests
-    ]);
-
-    // Fetch all users securely
-    $stmt = $conn->query("SELECT * FROM users");
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    try {
+    	$stmt = $conn->prepare("SELECT * FROM users");
+	$stmt->execute();
+    	$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+            error_stmt("Execution Error (User Fetch): " . $e->getMessage());
+        }
 }
 ?>
 

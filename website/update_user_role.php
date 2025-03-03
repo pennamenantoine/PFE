@@ -1,4 +1,9 @@
 <?php
+if (!isset($_SESSION['id'])) {
+    header('Location: index.php');
+    exit();
+}
+
 include "db.php";
 include "navbar.php";
 
@@ -6,18 +11,22 @@ function validateCSRFToken($csrfToken) {
     return hash_equals($_SESSION['csrf_token'] ?? '', $csrfToken);
 }
 
-// Vérifiez si l'utilisateur a un rôle d'administrateur
-if ($result === false) { 
-    header("Location: dashboard.php"); // Redirige vers le tableau de bord utilisateur si ce n'est pas un admin
+// Check if user is an admin
+if ($result === false) {
+    header("Location: dashboard.php"); // Redirection to dashboard if user is not an admin
     exit();
 } else {
-    // Récupérer tous les utilisateurs
-    $stmt = $conn->query("SELECT * FROM users");
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	try {
+    		// get all users
+    		$stmt = $conn->prepare("SELECT * FROM users");
+		$stmt->execute();
+    		$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	} catch (PDOException $e) {
+            error_stmt("Execution Error (User Fetch): " . $e->getMessage());
+	}
 }
 
 
-// Vérifier si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id']) && isset($_POST['role'])) {
     if (!isset($_POST['csrf_token'], $_SESSION['csrf_token']) ||
         !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
@@ -27,24 +36,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id']) && isset($_
     $userId = intval($_POST['user_id']);
     $newRole = $_POST['role'];
 
-    // Valider le rôle (pour éviter les entrées non valides)
+    // role validation to prevent invalid entries
     if ($newRole !== 'user' && $newRole !== 'admin') {
         die("Invalid role specified.");
     }
 
-    // Préparer la mise à jour du rôle
-    $stmt = $conn->prepare("UPDATE users SET role = :role WHERE id = :user_id");
-    $stmt->bindParam(':role', $newRole);
-    $stmt->bindParam(':user_id', $userId);
+    try {
+    	// Prepare role update
+    	$stmt = $conn->prepare("UPDATE users SET role = :role WHERE id = :user_id");
+    	$stmt->bindParam(':role', $newRole);
+    	$stmt->bindParam(':user_id', $userId);
+	$stmt->execute();
 
-    // Exécuter la mise à jour et vérifier le succès
-    if ($stmt->execute()) {
+	//user role updated
         header("Location: user_management.php?success=Role updated successfully");
-    } else {
-        header("Location: user_management.php?error=An error occurred while updating the role");
+        exit();
+    } catch (PDOException $e) {
+        header("Location: user_management.php?error=Database error: " . urlencode($e->getMessage()));
+        exit();
     }
 } else {
     header("Location: user_management.php?error=Invalid request");
+    exit();
 }
 ?>
 

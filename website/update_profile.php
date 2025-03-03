@@ -1,10 +1,8 @@
 <?php
-// Ensure user is authenticated
 if (!isset($_SESSION['id'])) {
     header('Location: index.php');
     exit();
 }
-
 include "db.php";
 
 $id = $_SESSION['id'];
