@@ -1,0 +1,118 @@
+/* Style the header */
+.header {
+  padding: 80px;
+  text-align: center;
+  background: #1abc9c;
+  background-image: url('/images/green-forest.jpeg');
+  color: white;
+}
+
+/* Increase the font size of the h1 element */
+.header h1 {
+  font-size: 40px;
+}
+
+/* Style the top navigation bar */
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+}
+
+/* Style the navigation bar links */
+.navbar a {
+  float: left;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 20px;
+  text-decoration: none;
+}
+
+/* Right-aligned link */
+.navbar a.right {
+  float: right;
+}
+
+/* Change color on hover */
+.navbar a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Column container */
+.row {  
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Create two unequal columns that sits next to each other */
+/* Sidebar/left column */
+.side {
+  flex: 30%;
+  background-color: #f1f1f1;
+  padding: 20px;
+}
+
+/* Main column */
+.main {   
+  flex: 70%;
+  background-color: white;
+  padding: 20px;
+}
+
+/* Fake image, just for this example */
+.fakeimg {
+  background-color: #aaa;
+  width: 100%;
+  padding: 20px;
+}
+
+/*products */
+ /* Style for the product container */
+.product-container {
+  display: flex;
+  flex-wrap: wrap; /* Allow products to wrap to the next line */
+  gap: 20px; /* Space between products */
+  justify-content: center; /* Center-align products */
+}
+
+/* Style for individual products */
+.product {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  width: calc(25% - 20px); /* 4 products per row, adjust for screen size */
+  box-sizing: border-box;
+  text-align: center; /* Center-align content inside the product */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  margin-bottom: 20px; /* Space below each product */
+}
+
+/* Ensure images have a fixed size and maintain aspect ratio */
+.product img {
+  width: 200px;  /* Fixed width for images */
+  height: 200px; /* Fixed height for images */
+  object-fit: cover; /* Crop and cover the area of the image */
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+/* Style for the product price */
+.product .price {
+  font-weight: bold;
+  color: #4CAF50; /* Green for price */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .product {
+      width: calc(50% - 20px); /* 2 products per row on smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .product {
+      width: 100%; /* 1 product per row on very small screens */
+  }
+}

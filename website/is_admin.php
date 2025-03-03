@@ -3,9 +3,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-//check if user is authentified
+//check if no session started
 if (!isset($_SESSION['id'])) {
-    header("Location: login.html");
+    header("Location: index.php");
     exit();
 }
 

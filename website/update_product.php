@@ -8,6 +8,11 @@ if ($result === false) {
     exit();
 }
 
+// check csrf token
+//if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+//    die("Invalid CSRF token");
+//}
+
 // Vérifier si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
     $action = $_POST['action'];

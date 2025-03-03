@@ -27,8 +27,6 @@ setcookie('csrf_token', generateCSRFToken(), [
 
 // Check if the config file exists
 $CONFIG_FILE = './config.php';
-$DB_ERR_LOG = './../logs/db.log';
-$SECURITY_LOG = "./../logs/security.log";
 
 // If the config file doesn't exist, show an error
 if (!file_exists($CONFIG_FILE)) {
@@ -80,19 +78,59 @@ header("Cross-Origin-Opener-Policy: same-origin");
 //Cross-Origin Embedder Policy (COEP)
 header("Cross-Origin-Embedder-Policy: require-corp");
 
-// Get the requested URI
+
+// Get the requested URI (path)
 $request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// Document root (../website)
-$basePath = realpath(__DIR__ . '/../website');
+// Document root (../website) and parent path (one level above)
+$basePath = realpath(__DIR__ . '/../website'); // Path to website directory
+$parentPath = realpath(__DIR__ . '/../'); // Path to the parent directory
 
-// Resolve the target file path
+// Define allowed subdirectories in the parent directory
+$allowedParentDirs = [
+    'logs/',
+    'uploads/',  // This is outside of the website directory
+    'images/'
+];
+
+// First, try resolving the file in the website directory
 $script_filename = realpath($basePath . $request_uri);
 
-// Ensure the requested file is inside the website directory
-if (!$script_filename || strpos($script_filename, $basePath) !== 0) {
+// If the file doesn't exist in the website directory, try checking in the allowed parent directories
+if (!$script_filename) {
+    foreach ($allowedParentDirs as $dir) {
+        // Check if the file exists in the parent directory's allowed directories
+        $script_filename = realpath($parentPath . $dir . $request_uri);
+        
+        // If found in one of the allowed directories, break the loop
+        if ($script_filename) {
+            break;
+        }
+    }
+}
+
+if (!$script_filename) {
+    // If the file doesn't exist in either location
+    header("HTTP/1.1 404 Not Found");
+    exit("File not found: {$request_uri}");
+}
+echo "Resolved file: " . $script_filename;  // Just for debugging
+exit(2);
+
+// Normalize the requested file path, which might point to the parent directory too
+$normalized_request_path = realpath($basePath . $request_uri);
+
+// Check if the requested file path exists and is within the allowed directories
+if (!$normalized_request_path) {
+    // If the file cannot be found
+    header("HTTP/1.1 404 Not Found");
+    exit("File not found: {$request_uri}");
+}
+
+if (!isValidFile($normalized_request_path, $basePath, $parentPath, $allowedParentDirs)) {
+    // If the file is not in an allowed directory
     header("HTTP/1.1 403 Forbidden");
-    exit('Access Forbidden.');
+    exit("Access Forbidden: {$normalized_request_path}");
 }
 
 // Allow direct access only to `/` (homepage) and `/index.php`
@@ -101,19 +139,50 @@ if ($request_uri === '/' || $request_uri === '/index.php') {
     exit();
 }
 
-// Block all other direct user access by HTTP_REFERER: the parent and should be in the website
-if (empty($_SERVER['HTTP_REFERER'])) {
-    header("HTTP/1.1 403 Forbidden");
-    exit('Access Forbidden.');
+// CSRF protection for POST requests
+/*
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die("403 Forbidden - Invalid CSRF Token");
+    }
 }
-
+*/
 // Allow internal app execution (for includes and requires)
-if (file_exists($script_filename)) {
+if (file_exists($normalized_request_path)) {
     return false; // Let the app access valid internal resources
 }
 
-
-// Fallback: Always load the main `index.php`
+// Fallback: Always load the main `index.php` if no specific resource found
 require $basePath . '/index.php';
 exit();
+
+/**
+ * Validate the file's path to ensure it's inside an allowed directory
+ * 
+ * @param string $filePath The full file path to validate.
+ * @param string $basePath The base directory (website directory).
+ * @param string $parentPath The parent directory.
+ * @param array $allowedDirs The list of allowed subdirectories in the parent directory.
+ * 
+ * @return bool True if the file is valid, false otherwise.
+ */
+function isValidFile($filePath, $basePath, $parentPath, $allowedDirs) {
+    // Check if the file is inside the website directory
+    if (strpos($filePath, $basePath) === 0) {
+        return true;
+    }
+
+    // Check if the file is inside one of the allowed subdirectories in the parent directory
+    foreach ($allowedDirs as $dir) {
+        $allowedPath = realpath($parentPath . $dir); // Resolve real path of each allowed dir
+        if (strpos($filePath, $allowedPath) === 0) {
+            return true; // File is inside allowed path (logs, uploads, images)
+        }
+    }
+
+    // If it's not in any allowed path, return false
+    return false;
+}
+
+
 ?>

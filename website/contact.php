@@ -1,4 +1,5 @@
 <?php
+// <--return to index
 echo '<a href="index.php" style="display: inline-block; margin-bottom: 10px; text-decoration: none; color: blue;">&larr; Home</a>';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

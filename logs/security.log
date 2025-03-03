@@ -7,3 +7,10 @@ FAILED LOGIN: Username: zerez | IP: ::1 | Time: 2025-02-18 15:46:08
 FAILED LOGIN: Username: zerez | IP: ::1 | Time: 2025-02-18 15:46:09
 FAILED LOGIN: Username: zerez | IP: ::1 | Time: 2025-02-18 15:46:09
 FAILED LOGIN: Username: zerez | IP: ::1 | Time: 2025-02-18 15:46:13
+FAILED LOGIN: Username: test4 | IP: 127.0.0.1 | Time: 2025-03-02 20:47:14
+FAILED LOGIN: Username: test4 | IP: 127.0.0.1 | Time: 2025-03-02 20:50:17
+FAILED LOGIN: Username: test4 | IP: 127.0.0.1 | Time: 2025-03-02 20:50:26
+LOCKED User: test4 | IP: 127.0.0.1 | Time: 2025-03-02 20:50:26
+FAILED LOGIN: Username: test | IP: 127.0.0.1 | Time: 2025-03-02 20:51:24
+FAILED LOGIN: Username: &lt;script&gt; | IP: 127.0.0.1 | Time: 2025-03-02 20:57:33
+FAILED LOGIN: Username: test4 | IP: 127.0.0.1 | Time: 2025-03-02 22:28:44

@@ -1,16 +1,29 @@
 <?php
+if (!isset($_SESSION['id'])) {
+    header("Location: index.php");
+    exit();
+}
+
 include 'db.php';
 include 'navbar.php';
 
-
-// Vérifiez si l'utilisateur a un rôle d'administrateur
-if ($result === false) { 
-    header("Location: dashboard.php"); // Redirige vers le tableau de bord utilisateur si ce n'est pas un admin
+// double check that user id admin
+if ($_SESSION['role'] !== 'admin') {
+    header("Location: dashboard.php");
     exit();
 } else {
-    // Récupérer tous les produits
-    $stmt = $conn->query("SELECT * FROM products");
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        // Fetch product information from the database
+        $stmt = $conn->query("SELECT * FROM products");
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_stmt("Database Error: " . $e->getMessage());
+        $products = [];
+    }
+}
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 ?>
 
@@ -19,7 +32,7 @@ if ($result === false) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management</title>
+    <title>Product Management</title>
     <style nonce="<?= $nonce; ?>">
         table {
             width: 100%;
@@ -55,13 +68,13 @@ if ($result === false) {
     <div class="scrollable-table">
     <table>
         <tr>
-            <th>product_id</th>
-            <th>name</th>
-            <th>description</th>
-            <th>price</th>
-            <th>stock</th>
-	        <th>image_url</th>
-            <th>alt_text</th>
+            <th>Product id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Stock</th>
+	        <th>Image url</th>
+            <th>Alt text</th>
             <th>Action</th>
         </tr>
         <?php foreach ($products as $product): ?>
@@ -70,6 +83,7 @@ if ($result === false) {
                 <form action="update_product.php" method="POST">
                     <input type="hidden" name="action" value="update">
                     <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <input type="text" name="product_id" value="<?php echo htmlspecialchars($product['product_id']); ?>">
             </td>
             <td><input type="text" name="name" value="<?php echo htmlspecialchars($product['name']); ?>"></td>
@@ -82,6 +96,7 @@ if ($result === false) {
                 <button type="submit">Update</button>
                 </form>
                 <form action="update_product.php" method="POST" onsubmit="return confirm('Confirm Deletion?');">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']);?>">                    
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
                     <button type="submit">Delete</button>
@@ -93,7 +108,8 @@ if ($result === false) {
     </div>
     <h2>Add a Product</h2>
 	<form action="update_product.php" method="POST">
-                <input type="hidden" name="action" value="insert">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']);?>"> 
+        <input type="hidden" name="action" value="insert">
 		<input type="text" name="product_id" placeholder="product_id" required>
 		<input type="text" name="name" placeholder="name" required>
 		<input type="text" name="description" placeholder="description" required>
