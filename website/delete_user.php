@@ -13,9 +13,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'])) {
     if (!is_numeric($userId)) {
         header("Location: user_management.php?error=Invalid user ID");
         exit();
-    }    
+    }
 
-    echo "User ID is: " . htmlspecialchars($userId, ENT_QUOTES, 'UTF-8');
+    if ($userId == $_SESSION['id']) {
+        header("Location: user_management.php?error=You cannot delete your own account");
+        exit();
+    }
+
     try {
         // Prepare and execute the delete statement
         $stmt = $conn->prepare("DELETE FROM users WHERE id = :user_id");

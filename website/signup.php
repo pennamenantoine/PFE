@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Validate password strength
         if (!isValidPassword($password)) {
             $message = "Password must be at least 8 characters long, contain one digit, and one special character.";
-            redirect($message);
+            die($message);
         }
 
         // Check if username already exists
@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Check if a row is found
         if ($user) {
             $message = "Username already taken! Please choose another one.";
-            redirect($message);
+            die($message);
         }
 
         // Hash the password
@@ -65,13 +65,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Insert new user
         try {
-            $insert_query = "INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)";
+            $insert_query = "INSERT INTO users (username, password, email, role) VALUES (:username, :password, :email, :role)";
             $stmt = $conn->prepare($insert_query);
-
-            if ($stmt->execute([$username, $hashed_password, $email, $role])) {
-                $message = "User created successfully.";
-                redirect($message);
-            }    
+	    $stmt->bindParam(":username", $username, PDO::PARAM_STR);
+	    $stmt->bindParam(":password", $hashed_password, PDO::PARAM_STR);
+	    $stmt->bindParam(":email", $email, PDO::PARAM_STR);
+	    $stmt->bindParam(":role", $role, PDO::PARAM_STR);
+            $stmt->execute();
+            $message = "User created successfully.";
+            redirect($message);
         }catch (PDOException $e) {
             // Catch the PDOException error
             $error_message = "Error: " . $e->getMessage(); // Get the error message from the exception

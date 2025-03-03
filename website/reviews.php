@@ -21,12 +21,24 @@ if ($connection) {
     // Handle form submission
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $rating = intval($_POST['rating']);
-        $comment = $_POST['comment'];
+	$allowed_ratings = [1, 2, 3, 4, 5];
+	if (!in_array($rating, $allowed_ratings, true)) {
+    		die("Invalid rating value.");
+	}
+	if (!isset($_POST['rating']) || !is_numeric($_POST['rating'])) {
+    		die("Rating value is required and must be a number.");
+	}
+        $comment = htmlspecialchars($_POST['comment'], ENT_QUOTES, 'UTF-8');
 
-        // Use prepared statement to avoid SQL syntax errors
-        $stmt = $conn->prepare("INSERT INTO reviews (user_id, rating, comment) VALUES (?, ?, ?)");
-        $stmt->execute([$user_id, $rating, $comment]);
-
+	try {
+        	$stmt = $conn->prepare("INSERT INTO reviews (user_id, rating, comment) VALUES (:user_id, :rating, :comment)");
+        	$stmt->bindParam(":user_id", $user_id, PDO::PARAM_INT);
+		$stmt->bindParam(":rating", $rating, PDO::PARAM_INT);
+		$stmt->bindParam(":comment", $comment, PDO::PARAM_STR);
+		$stmt->execute();
+	}catch (PDOException $e) {
+            error_stmt("Execution Error (Insert Review): " . $e->getMessage());
+        }    
         // Refresh page to show the updated feedback table
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
@@ -34,12 +46,16 @@ if ($connection) {
 }
 
 // Fetch all feedbacks, sorted by date (newest first)
-$stmt = $conn->query("SELECT r.*, u.username 
+try {
+	$stmt = $conn->prepare("SELECT r.*, u.username 
                         FROM reviews r
                         JOIN users u ON r.user_id = u.id
                         ORDER BY r.created_at DESC");
-$reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+	$stmt->execute();
+	$reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+            error_stmt("Execution Error (User Fetch): " . $e->getMessage());
+   }
 ?>
 
 <!DOCTYPE html>

@@ -27,7 +27,7 @@ setcookie('csrf_token', generateCSRFToken(), [
 
 // Check if the config file exists
 $CONFIG_FILE = './config.php';
-$DB_ERR_LOG = './../logs/db.log';
+$DB_ERR_LOG = "./../logs/db.log";
 $SECURITY_LOG = "./../logs/security.log";
 
 // If the config file doesn't exist, show an error

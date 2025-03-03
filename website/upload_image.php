@@ -43,7 +43,7 @@ if ($imageData[0] <= 0 || $imageData[1] <= 0) {
 
 // check file size
 if ($fileSize > $maxFileSize) {
-    die("file is too large. Max size allowed : 2MB.");
+    die ("file is too large. Max size allowed : 2MB.");
 }
 
 // rename file on the server

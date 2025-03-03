@@ -68,7 +68,7 @@ if (isset($_SESSION['uploaded_image'])) {
        <form action="update_profile.php" method="POST">
             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
             <a href="upload.php">update photo</a>
-            <img src="<?php echo $picture; ?>" style="width:100%; max-width: 300px; max-height: 300px; object-fit: cover;">
+            <img src="<?php echo $picture; ?>" style="width:100%; max-width: 100px; max-height: 100px; object-fit: cover;">
             <input type="text" name="picture" value="<?php echo $picture; ?>" hidden>
 
             <label id="enable_email_field" style="color: blue; cursor: pointer; text-decoration: underline;">update email</label>

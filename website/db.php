@@ -1,10 +1,10 @@
 <?php
-
-function error_stmt ($error_st){
-    // Log error to a file for debugging purposes
-    error_log("MySQL Error: " . $error_st, 3, $DB_ERR_LOG);
-    // Display a friendly message to the user
-    echo "There was an error processing your request. Please try again later.";
+function error_stmt($error_st){
+    	// Log error to a file for debugging purposes
+	error_log("MySQL Error: " . $error_st . "Username: " . $_SESSION['username']. " | IP: " . $_SERVER['REMOTE_ADDR'] . " | Time: " . date("Y-m-d H:i:s") . "\n", 3, $GLOBALS['DB_ERR_LOG']);
+	// Display a friendly message to the user
+    	echo "There was an error processing your request. Please try again later.";
+	exit();
 }
 
 // Include the config file and assign values
