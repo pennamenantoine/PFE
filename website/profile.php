@@ -92,12 +92,6 @@ if (isset($_SESSION['uploaded_image'])) {
             <input id="confirm_new_password" type="password" placeholder="Confirm Password" name="confirm_new_password" hidden>
             <button type="submit">Save</button>
         </form>
-	<?php
-	if (isset ($_GET['param'])){
-        //echo $_GET['param'];
-		echo "Profile updated successfully";
-    }
-	?>
     </div>
 </body>
 </html>
