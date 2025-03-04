@@ -1,4 +1,9 @@
 <?php
+if (!isset($_SESSION['id'])) {
+    header('Location: index.php');
+    exit();
+}
+
 // Check if the user is an admin
 $result = include 'is_admin.php'; // Ensure is_admin.php returns a boolean
 ?>

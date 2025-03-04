@@ -5,3 +5,39 @@ MySQL Error: Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'user
 MySQL Error: Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'users_id' in 'where clause'Username: admin | IP: ::1 | Time: 2025-03-03 14:03:46
 MySQL Error: Execution Error (insert picture): SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`user_auth`.`images`, CONSTRAINT `images_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)Username: fayza | IP: ::1 | Time: 2025-03-03 14:11:33
 MySQL Error: Execution Error (User Fetch): SQLSTATE[HY093]: Invalid parameter number: parameter was not definedUsername: test | IP: 127.0.0.1 | Time: 2025-03-03 15:14:05
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:05
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:06
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:06
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:06
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:06
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:06
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:06
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:06
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:07
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:07
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:07
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:07
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:08
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:08
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:08
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:08
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:08
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:08
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:09
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:09
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:09
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:09
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:10
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:10
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:10
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:25
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:27
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:28
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:30
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:49
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:37:52
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:39:08
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:55:28
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:55:45
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:55:47
+MySQL Error: Connection Error: . ()Username: admin | IP: ::1 | Time: 2025-03-04 10:55:49

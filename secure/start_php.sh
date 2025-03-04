@@ -25,6 +25,12 @@ cleanup() {
     kill "$PHP_PID" 2>/dev/null
     echo "Reset DB_HOST to localhost"
     export DB_HOST="localhost"
+    # Remove session files (if stored in a custom folder)
+    SESSION_DIR="../logs/sessions"
+    if [ -d "$SESSION_DIR" ]; then
+        echo "Deleting session files..."
+        rm -f "$SESSION_DIR"/*
+    fi
     echo "Cleanup complete."
     exit 0
 }

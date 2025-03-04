@@ -1,4 +1,5 @@
 <?php
+session_save_path("./../logs/sessions");
 
 session_set_cookie_params([
     'lifetime' => 86400, // Cookie lasts 1 day, 0 Cookie expires when the browser is closed
