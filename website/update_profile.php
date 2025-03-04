@@ -9,6 +9,8 @@ include "db.php";
 
 $id = $_SESSION['id'];
 $username = $_SESSION['username'];
+$comment = " ";
+$alert_msg = "!!! ";
 
 function isValidPassword($password) {
     // Minimum 8 characters, at least 1 digit and 1 special character
@@ -20,81 +22,104 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		die('CSRF validation failed.');
 	}
 	
+	try {
+		$stmt = $conn->prepare("SELECT * FROM users WHERE id = :id");
+		$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+		$stmt->execute();
+		$users = $stmt->fetch(PDO::FETCH_ASSOC);
+	} catch (PDOException $e) {
+		// Catch the PDOException error
+		$error_message = "Error: " . $e->getMessage(); // Get the error message from the exception
+		error_stmt ($error_message);
+	}
+
 	// Update profile picture
     if (!empty($_POST['picture'])) {
 
 		try {
-			$stmt = $conn->prepare("SELECT user_id FROM images WHERE user_id = :id");
+			$stmt = $conn->prepare("SELECT * FROM images WHERE user_id = :id");
 			$stmt->bindParam(':id', $id, PDO::PARAM_INT);
 			$stmt->execute();
-			$u = $stmt->fetchColumn();
+			$u = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch (PDOException $e) {
 			// Catch the PDOException error
 			$error_message = "Error: " . $e->getMessage(); // Get the error message from the exception
 			error_stmt ($error_message);
 		}
-	
+
+		$oldImage = $u['file_path'];
 		$newImagePath = $_POST['picture'];
         $newImagePath = htmlspecialchars($newImagePath, ENT_QUOTES, 'UTF-8');
-	
-		// Update profile picture if provided
-		if (!empty($newImagePath)) {
-			$picture = filter_var($newImagePath, FILTER_SANITIZE_URL);
-			// if user has an image in images table
-			if ($u) {
-				try {
-					$stmt = $conn->prepare("UPDATE images SET file_path = :file_path WHERE user_id = :id");
-					$stmt->bindParam(':file_path', $picture, PDO::PARAM_STR);
-					$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-					$stmt->execute();
-					// $result_img = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch (PDOException $e) {
-					error_stmt("Execution Error (update picture): " . $e->getMessage());
-				}
+		
+		//new picture upload
+		if ($oldImage != $newImagePath) {
+			// Update profile picture if provided
+			if (!empty($newImagePath)) {
+				$picture = filter_var($newImagePath, FILTER_SANITIZE_URL);
+				// if user has an image in images table
+				if ($u) {
+					try {
+						$stmt = $conn->prepare("UPDATE images SET file_path = :file_path WHERE user_id = :id");
+						$stmt->bindParam(':file_path', $picture, PDO::PARAM_STR);
+						$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+						$stmt->execute();
+						// $result_img = $stmt->fetch(PDO::FETCH_ASSOC);
+					} catch (PDOException $e) {
+						error_stmt("Execution Error (update picture): " . $e->getMessage());
+					}
+					
+					if ($stmt->rowCount() > 0) {
+						$comments .= "Image path updated successfully.";
+					} else {
+						$alert_msg .= "Error in photo $picture update.";
+					}	
+				} 
+				else {
+					// insert a new line in images table 
+					try {
+						$stmt = $conn->prepare("INSERT INTO images (user_id, file_path) VALUES  (:id, :file_path)");
+						$stmt->bindParam(':file_path', $picture, PDO::PARAM_STR);
+						$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+						$stmt->execute();
+						$result_img = $stmt->fetch(PDO::FETCH_ASSOC);
+					} catch (PDOException $e) {
+						error_stmt("Execution Error (insert picture): " . $e->getMessage());
+					}
 
-				if ($stmt->rowCount() > 0) {
-					echo "Image path updated successfully.";
-				} else {
-					echo "Error in photo $picture update.";
-				}	
-			} 
-			else {
-				// insert a new line in images table 
-				try {
-					$stmt = $conn->prepare("INSERT INTO images (user_id, file_path) VALUES  (:id, :file_path)");
-					$stmt->bindParam(':file_path', $picture, PDO::PARAM_STR);
-					$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-					$stmt->execute();
-					$result_img = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch (PDOException $e) {
-					error_stmt("Execution Error (insert picture): " . $e->getMessage());
-				}
-
-				if (!$result_img) {
-					echo "Picture Error";
+					if (!$result_img) {
+						$alert_msg .= "Picture Error";
+					}
 				}
 			}
 		}
+		
 	}
 
-	// update email
+	// update email if changed
 	$email = $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-	try {
-		$email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-		$stmt = $conn->prepare("UPDATE users SET email = :email WHERE id = :id");
-		$stmt->bindParam(':email', $email, PDO::PARAM_STR);
-		$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-		$stmt->execute();
-    }catch (PDOException $e) {
-			error_stmt("Execution Error (email update): " . $e->getMessage());
-	}
+	if ($email != $users['email']) {
+		try {
+			$email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+			$stmt = $conn->prepare("UPDATE users SET email = :email WHERE id = :id");
+			$stmt->bindParam(':email', $email, PDO::PARAM_STR);
+			$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+			$stmt->execute();
+		}catch (PDOException $e) {
+				error_stmt("Execution Error (email update): " . $e->getMessage());
+		}
+		if ($stmt->rowCount() > 0) {
+			$comments .= "email updated successfully.";
+		} else {
+			$alert_msg .= "Error in email update.";
+		}	
+	}	
 
 	// update password
 	if (!empty($_POST['old_password']) && !empty($_POST['new_password']) && !empty($_POST['confirm_new_password'])) {
 		// Validate new password strength
-        if (!isValidPassword($password)) {
+        if (!isValidPassword($_POST['new_password']) || !isValidPassword($_POST['confirm_new_password'])) {
             $message = "Password must be at least 8 characters long, contain one digit, and one special character.";
-            die($message);
+            $alert_msg .= $message;
         } 
 		else {
 			$old_password = password_hash($_POST['old_password'], PASSWORD_ARGON2ID);
@@ -110,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			}    
 
 			if (!password_verify($old_password, $user['password'])) {
-				die("Incorrect old password.");
+				$alert_msg .= "Incorrect old password.";
 			}
 			// check confirm password
 			if ($_POST['new_password'] === $_POST['confirm_new_password']) {
@@ -126,11 +151,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				} catch (PDOException $e) {
 					error_stmt("Execution Error (password update): " . $e->getMessage());
 				}	
+				$comments .= "Password updated successfully";
             } 
 			else {
-                    die("Passwords do not match.");
+                $alert_msg .= "Passwords do not match.";
             }
 		}
-	}	
+	}
+	if (isset($_POST['comments'])) {
+		//$_SESSION['comments'] = trim($_POST['comments']);
+		$_SESSION['comments'] = $alert_msg;
+		$_SESSION['comments'] .= $comments;
+		header('Location: profile.php');
+		exit();
+	}
 }
 ?>

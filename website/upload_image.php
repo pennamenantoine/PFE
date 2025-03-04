@@ -23,7 +23,7 @@ finfo_close($finfo);
 
 // check if file is a real image, use @ to delete warnings
 if (!@getimagesize($fileTmpPath)) {
-    die("file is not a valid image.");
+    die("file format not accepted.");
 }
 
 // check extension and mime type

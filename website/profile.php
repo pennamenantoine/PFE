@@ -4,6 +4,12 @@ if (!isset($_SESSION['id'])) {
     exit();
 }
 
+$comments = "Status: ";
+if (isset($_SESSION['comments'])) {    
+    $comments .= $_SESSION['comments'];
+    unset($_SESSION['comments']); 
+}
+
 include "db.php";
 include 'navbar.php';
 //nonce for javascript
@@ -91,6 +97,10 @@ if (isset($_SESSION['uploaded_image'])) {
             <input id="new_password" type="password" placeholder="New password" name="new_password" hidden>
             <input id="confirm_new_password" type="password" placeholder="Confirm Password" name="confirm_new_password" hidden>
             <button type="submit">Save</button>
+
+            
+            <textarea name="comments" class="comment-field" readonly><?php echo htmlspecialchars($comments); ?></textarea>
+    
         </form>
     </div>
 </body>

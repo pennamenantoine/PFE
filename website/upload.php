@@ -25,7 +25,7 @@ include 'navbar.php';
 <body>
 
 <!-- Image upload form -->
-<form action="upload_image.php" method="post" enctype="multipart/form-data">
+<form action="upload_image.php" method="post" enctype="multipart/form-data" style="margin-top: 30px;">
     <label for="fileToUpload">Select image to upload:</label>
     <input type="file" name="fileToUpload" id="fileToUpload">
     <input type="submit" value="Upload Image" name="submit">
