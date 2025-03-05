@@ -1,0 +1,141 @@
+/* General container styles */
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    flex-wrap: wrap; /* Allow wrapping if content overflows */
+}
+
+.signup-container form {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap; /* Allow sections to wrap if necessary */
+}
+
+/* Section styling for photo, email, and password (on the same row) */
+#photo-section, #email-section, #password-section {
+    display: flex;
+    flex-direction: column; /* Stack content vertically within each section */
+    width: 30%; /* Each section will take 30% of the width */
+    min-width: 280px; /* Ensure sections don't become too narrow */
+    margin-right: 15px; /* Reduced space between sections */
+    padding: 10px;
+}
+
+/* Remove the extra margin from the last section */
+#password-section {
+    margin-right: 0;
+}
+
+/* Adjust photo section image size */
+img {
+    width: 100%;
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+}
+
+/* Input fields */
+input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+/* Button Styling */
+button {
+    width: 30%; /* Button width is now 30% */
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px; /* Add space before the button */
+    margin-left: auto;
+    margin-right: auto; /* Center the comment field */
+}
+
+button:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+}
+
+#update-password-btn {
+    display: inline-block; /* Ensure visibility */
+    visibility: visible;   /* Ensure it's not hidden */
+}
+
+/* Error message visibility hidden by default */
+#old-password-error, #new-password-error, #confirm-new-password-error {
+    display: none;
+}
+/* Comments Section Styling */
+#comments-section {
+    width: 100%; /* Full width under button */
+    margin-top: 20px;
+    text-align: center; /* Center the comments field */
+}
+
+/* Comments text area */
+.comment-field {
+    width: 50%; /* Set to 50% width for better alignment */
+    height: 100px;
+    border: none;
+    padding: 8px;
+    margin-top: 5px;
+    box-shadow: none;
+    margin-left: auto;
+    margin-right: auto; /* Center the comment field */
+    text-align: center; /* Center the comments field */
+}
+
+/* Hide password labels until needed */
+#old_password_label, #new_password_label, #confirm_new_password_label {
+    display: none;
+}
+
+/* Readonly email field styling */
+#email-section input[readonly] {
+    background-color: #f0f0f0;
+}
+
+/* Adjustments for password fields when shown */
+#old_password, #new_password, #confirm_new_password {
+    width: 100%;
+}
+
+main {
+    text-align: center; /* Center align text */
+    margin: 0 auto; /* Center main element horizontally */
+    width: 80%; /* Set a maximum width for main */
+    margin-top: 20px; /* Optional: adds space above the main section */
+}
+
+/* Responsiveness: Stack sections vertically on small screens */
+@media (max-width: 768px) {
+    /* Stack sections vertically */
+    .signup-container form {
+        flex-direction: column; /* Stack form sections vertically */
+        align-items: center; /* Center align form */
+    }
+
+    #photo-section, #email-section, #password-section {
+        width: 100%; /* Each section will take 100% width on small screens */
+        margin-right: 0; /* No right margin on small screens */
+    }
+
+    #comments-section {
+        width: 100%; /* Full width on smaller screens */
+        margin-top: 10px;
+
+    }
+
+    button {
+        width: 100%; /* Full width button on smaller screens */
+    }
+}

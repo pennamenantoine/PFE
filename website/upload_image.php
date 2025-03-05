@@ -1,7 +1,22 @@
 <?php
+// Ensure user is authenticated
+if (!isset($_SESSION['id'])) {
+    header('Location: index.php');
+    exit();
+}
+
 $target_dir = "./uploads/";
 if (!is_dir($target_dir)) {
     mkdir($target_dir, 0755, true);
+}
+
+$comments = " ";
+
+function go_to_profile() {   
+    global $comments;
+    $_SESSION['comments'] .= $comments;    
+    header("Location: profile.php");
+    exit;
 }
 
 $maxFileSize = 2 * 1024 * 1024; // 2MB
@@ -9,7 +24,8 @@ $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
 if (!isset($_FILES['fileToUpload']) || $_FILES['fileToUpload']['error'] !== UPLOAD_ERR_OK) {
-    die("There was an error while uploading the file.");
+    $comments .= "There was an error while uploading the file.";
+    go_to_profile();
 }
 
 // file check
@@ -23,27 +39,32 @@ finfo_close($finfo);
 
 // check if file is a real image, use @ to delete warnings
 if (!@getimagesize($fileTmpPath)) {
-    die("file format not accepted.");
+    $comments .= "file format not accepted.";
+    go_to_profile();
 }
 
 // check extension and mime type
 if (!in_array($fileExtension, $allowedExtensions) || !in_array($fileMimeType, $allowedMimeTypes)) {
-    die("file type not allowed.");
+    $comments .= "file type not allowed.";
+    go_to_profile();
 }
 
 // Check metadata
 if (!$imageData = getimagesize($fileTmpPath)) {
-    die("File is not a valid image.");
+    $comments .= "File is not a valid image.";
+    go_to_profile();
 }
 
 // Check image dimension
 if ($imageData[0] <= 0 || $imageData[1] <= 0) {
-    die("Invalid image dimensions.");
+    $comments .= "Invalid image dimension.";
+    go_to_profile();
 }
 
 // check file size
 if ($fileSize > $maxFileSize) {
-    die ("file is too large. Max size allowed : 2MB.");
+    $comments .= "ile is too large. Max size allowed : 2MB.";
+    go_to_profile();
 }
 
 // rename file on the server
@@ -51,11 +72,16 @@ $newFileName = bin2hex(random_bytes(16)) . '.' . 'jpg';
 $destination = $target_dir . $newFileName;
 $_SESSION['uploaded_image'] = $destination;
 
+
 // move the file
 if (move_uploaded_file($fileTmpPath, $destination)) {
-    header("Location: profile.php");
-    exit;
+    $comments .= "The file has been uploaded. You can save it now";
+    go_to_profile();
 } else {
-    die("There was an error while moving the file.");
+    $comments .=  "There was an error while moving the file.";
+    go_to_profile();
 }
+
+ 
+
 ?>

@@ -9,8 +9,8 @@ include "db.php";
 
 $id = $_SESSION['id'];
 $username = $_SESSION['username'];
-$comment = " ";
-$alert_msg = "!!! ";
+$comments = " ";
+$alert_msg = " ";
 
 function isValidPassword($password) {
     // Minimum 8 characters, at least 1 digit and 1 special character
@@ -20,6 +20,9 @@ function isValidPassword($password) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
 		die('CSRF validation failed.');
+	}
+	if (!isset($_SESSION['csrf_token'])) {
+		$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 	}
 	
 	try {
@@ -69,9 +72,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 					}
 					
 					if ($stmt->rowCount() > 0) {
-						$comments .= "Image path updated successfully.";
+						$comments .= "Profile photo updated successfully.";
 					} else {
-						$alert_msg .= "Error in photo $picture update.";
+						$alert_msg .= "Error in photo update.";
 					}	
 				} 
 				else {
@@ -115,52 +118,62 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	}	
 
 	// update password
-	if (!empty($_POST['old_password']) && !empty($_POST['new_password']) && !empty($_POST['confirm_new_password'])) {
-		// Validate new password strength
-        if (!isValidPassword($_POST['new_password']) || !isValidPassword($_POST['confirm_new_password'])) {
-            $message = "Password must be at least 8 characters long, contain one digit, and one special character.";
-            $alert_msg .= $message;
-        } 
-		else {
-			$old_password = password_hash($_POST['old_password'], PASSWORD_ARGON2ID);
-			// check old password is correct
-			try {    
-				// Check if the user exists and get lockout status
-				$stmt = $conn->prepare("SELECT id, username, password, role, email, failed_attempts, lockout_until FROM users WHERE username = :username");
-				$stmt->bindParam(":username", $username, PDO::PARAM_STR);
-				$stmt->execute();
-				$user = $stmt->fetch(PDO::FETCH_ASSOC);
-			} catch (PDOException $e) {
-				error_stmt("Execution Error (User Fetch): " . $e->getMessage());
-			}    
-
-			if (!password_verify($old_password, $user['password'])) {
-				$alert_msg .= "Incorrect old password.";
-			}
-			// check confirm password
-			if ($_POST['new_password'] === $_POST['confirm_new_password']) {
-
-				$new_password = password_hash($_POST['new_password'], PASSWORD_ARGON2ID);
-				$confirm_new_password = password_hash($_POST['confirm_new_password'], PASSWORD_ARGON2ID);
+	if (isset($_POST['old_password'], $_POST['new_password'], $_POST['confirm_password'])) {
+		if (!empty($_POST['old_password']) && !empty($_POST['new_password']) && !empty($_POST['confirm_password'])) {
 			
-				try{
-					$stmt = $conn->prepare("UPDATE users SET password = :password WHERE id = :id");
-					$stmt->bindParam(':password', $newPassword, PDO::PARAM_STR);
+			// Validate new password strength
+			if (!isValidPassword($_POST['new_password']) || !isValidPassword($_POST['confirm_password'])) {
+				$message = "Password must be at least 8 characters long, contain one digit, and one special character.";
+				$alert_msg .= $message;
+			} 
+			else {
+				// check old password is correct
+				try {    
+					// Check if the user exists and get lockout status
+					$stmt = $conn->prepare("SELECT id, username, password, role, email, failed_attempts, lockout_until FROM users WHERE id = :id");
 					$stmt->bindParam(':id', $id, PDO::PARAM_INT);
 					$stmt->execute();
+					$user = $stmt->fetch(PDO::FETCH_ASSOC);
 				} catch (PDOException $e) {
-					error_stmt("Execution Error (password update): " . $e->getMessage());
-				}	
-				$comments .= "Password updated successfully";
-            } 
-			else {
-                $alert_msg .= "Passwords do not match.";
-            }
+					error_stmt("Execution Error (User Fetch): " . $e->getMessage());
+				}    
+				$old_pass = isset($_POST['old_password']) ? trim($_POST['old_password']) : ''; // Passwords should not be sanitized destructively
+				
+				if (!password_verify($old_pass, $user['password'])) {
+					$alert_msg .= "Incorrect old password.";
+				}
+				
+				else {
+					// check confirm password
+					if ($_POST['new_password'] === $_POST['confirm_password']) {
+
+						$new_password_hash = password_hash($_POST['new_password'], PASSWORD_ARGON2ID);
+						//$confirm_password = password_hash($_POST['confirm_password'], PASSWORD_ARGON2ID);
+						
+						try{
+							$stmt = $conn->prepare("UPDATE users SET password = :new_password_hash WHERE id = :id");
+							$stmt->bindParam(':new_password_hash', $new_password_hash, PDO::PARAM_STR); // Corrected variable name
+							$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+							$stmt->execute();
+						} catch (PDOException $e) {
+							error_stmt("Execution Error (password update): " . $e->getMessage());
+						}	
+						$comments .= "Password updated successfully";
+					} 
+					else {
+						$alert_msg .= "Passwords do not match.";
+					}
+				
+				}
+			}
 		}
 	}
+	else {
+		$alert_msg .= "passwords are missing";
+	}
 	if (isset($_POST['comments'])) {
-		//$_SESSION['comments'] = trim($_POST['comments']);
 		$_SESSION['comments'] = $alert_msg;
+		$_SESSION['comments'] .= "\n";
 		$_SESSION['comments'] .= $comments;
 		header('Location: profile.php');
 		exit();
