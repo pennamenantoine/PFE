@@ -63,3 +63,5 @@ MySQL Error: Execution Error (password update): SQLSTATE[23000]: Integrity const
 MySQL Error: Execution Error (password update): SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'password' cannot be nullUsername: test | IP: 127.0.0.1 | Time: 2025-03-05 19:12:26
 MySQL Error: Execution Error (password update): SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'password' cannot be nullUsername: test | IP: 127.0.0.1 | Time: 2025-03-05 19:42:05
 MySQL Error: Execution Error (password update): SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'password' cannot be nullUsername: test | IP: 127.0.0.1 | Time: 2025-03-05 19:47:26
+MySQL Error: Connection Error: . ()Username:  | IP: 127.0.0.1 | Time: 2025-03-06 16:07:41
+MySQL Error: Connection Error: . ()Username:  | IP: 127.0.0.1 | Time: 2025-03-06 16:08:07

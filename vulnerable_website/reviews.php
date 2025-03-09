@@ -88,6 +88,9 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
             width: 50%; 
             resize: vertical;
         }
+        .user_id-column {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -98,6 +101,7 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <table>
             <thead>
                 <tr>
+                    <th class="user_id-column">User_id</th>
                     <th class="username-column">Username</th>
                     <th class="rating-column">Rating</th>
                     <th class="comment-column">Review</th>
@@ -107,6 +111,7 @@ $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <tbody>
                 <?php foreach ($reviews as $review): ?>
                     <tr>
+                        <td class="user_id-column"><?php echo ($review['user_id']); ?></td>
                         <td class="username-column"><?php echo ($review['username']); ?></td>
                         <td class="rating-column"><?php echo str_repeat('⭐', $review['rating']); ?></td>
                         <td class="comment-column"><?php echo ($review['comment']); ?></td>

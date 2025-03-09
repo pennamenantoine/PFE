@@ -81,7 +81,7 @@ if ($result === false) {
                 </form>
             </td>
             <td>
-                <form action="delete_user.php" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                <form action="delete_user.php" method="POST" onsubmit="return confirm('Confirm user delete ?');">
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">    
                 <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
                     <button type="submit">Delete</button>
